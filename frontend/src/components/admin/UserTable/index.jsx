@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
+
 import {
   FaToggleOn,
   FaToggleOff,
@@ -13,15 +14,44 @@ import {
 } from "react-icons/fa";
 
 import { deleteUser, updateUser } from "store/slices/usersSlice";
-import { ITEMS_PER_PAGE, MIN_GB_LIMIT, MAX_GB_LIMIT } from "constants/index.js";
 import { validateNumber, validateRange } from "utils/validators.js";
+import { ITEMS_PER_PAGE, MIN_GB_LIMIT, MAX_GB_LIMIT } from "constants/index.js";
+
 
 [
-    { name: 'ITEMS_PER_PAGE', value: ITEMS_PER_PAGE, integer: true },
-    { name: 'MIN_GB_LIMIT', value: MIN_GB_LIMIT },
-    { name: 'MAX_GB_LIMIT', value: MAX_GB_LIMIT }
-].forEach(({ name, value, integer }) => validateNumber(name, value, integer));
-validateRange('MIN_GB_LIMIT', MIN_GB_LIMIT, 'MAX_GB_LIMIT', MAX_GB_LIMIT);
+    {
+      name: 'ITEMS_PER_PAGE', 
+      value: ITEMS_PER_PAGE, 
+      integer: true
+    },
+    { 
+      name: 'MIN_GB_LIMIT', 
+      value: MIN_GB_LIMIT
+    },
+    { 
+      name: 'MAX_GB_LIMIT', 
+      value: MAX_GB_LIMIT 
+    }
+].forEach(
+  (
+    { 
+      name, 
+      value, 
+      integer 
+    }
+  ) => validateNumber(
+    name, 
+    value, 
+    integer
+  )
+);
+
+validateRange(
+  'MIN_GB_LIMIT', 
+  MIN_GB_LIMIT, 
+  'MAX_GB_LIMIT', 
+  MAX_GB_LIMIT
+);
 
 const UserTable = ({ users, isMobile }) => {
   const dispatch = useDispatch();

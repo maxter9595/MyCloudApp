@@ -50,33 +50,25 @@ class FileShareSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserFile
-        fields = ['shared_link', 'shared_expiry', 'expiry_days']
-        read_only_fields = ['shared_link', 'shared_expiry']
-
-    # def update(self, instance, validated_data):
-    #     expiry_days = validated_data.pop('expiry_days', None)
-        
-    #     if expiry_days:
-    #         instance.shared_expiry = timezone.now() + timedelta(days=expiry_days)
-    #         instance.save()
-
-    #     instance.shared_link = uuid.uuid4()  # Generate new link when sharing
-    #     instance.save()
-
-    #     return instance
+        fields = [
+            'shared_link',
+            'shared_expiry',
+            'expiry_days'
+        ]
+        read_only_fields = [
+            'shared_link',
+            'shared_expiry'
+        ]
 
     def update(self, instance, validated_data):
         expiry_days = validated_data.pop('expiry_days', None)
-        
-        # Обновляем срок действия, если указано количество дней
+
         if expiry_days is not None:
             instance.shared_expiry = timezone.now() + timedelta(days=expiry_days)
-        
-        # Если срок не указан, устанавливаем значение по умолчанию (7 дней)
+
         elif instance.shared_expiry is None or instance.is_shared_link_expired():
             instance.shared_expiry = timezone.now() + timedelta(days=7)
-        
-        # Генерируем новую ссылку только если ее нет или она просрочена
+
         if not instance.shared_link or instance.is_shared_link_expired():
             instance.shared_link = uuid.uuid4()
         

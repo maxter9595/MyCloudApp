@@ -1,28 +1,31 @@
-from apps.accounts.models import CustomUser
-from apps.storage.models import UserFile
+from django.urls import reverse
+from django.db import connection
 from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.db import connection
-from django.urls import reverse
+
 from rest_framework import status
 from rest_framework.test import APITransactionTestCase
+
+from apps.storage.models import UserFile
+from apps.accounts.models import CustomUser
 
 
 class FileAPITestCase(APITransactionTestCase):
     reset_sequences = True
 
     def setUp(self):
-        # Clear the database
         UserFile.objects.all().delete()
         CustomUser.objects.all().delete()
-        
-        # Reset sequences for PostgreSQL
+
         if connection.vendor == 'postgresql':
             with connection.cursor() as cursor:
-                cursor.execute("ALTER SEQUENCE storage_userfile_id_seq RESTART WITH 1;")
-                cursor.execute("ALTER SEQUENCE accounts_customuser_id_seq RESTART WITH 1;")
-        
-        # Create test data
+                cursor.execute(
+                    "ALTER SEQUENCE storage_userfile_id_seq RESTART WITH 1;"
+                )
+                cursor.execute(
+                    "ALTER SEQUENCE accounts_customuser_id_seq RESTART WITH 1;"
+                )
+
         self.user = CustomUser.objects.create_user(
             username='testuser',
             email='test@example.com',
@@ -48,10 +51,15 @@ class FileAPITestCase(APITransactionTestCase):
         UserFile.objects.all().delete()
         CustomUser.objects.all().delete()
         cache.clear()
+
         if connection.vendor == 'postgresql':
             with connection.cursor() as cursor:
-                cursor.execute("ALTER SEQUENCE storage_userfile_id_seq RESTART WITH 1;")
-                cursor.execute("ALTER SEQUENCE accounts_customuser_id_seq RESTART WITH 1;")
+                cursor.execute(
+                    "ALTER SEQUENCE storage_userfile_id_seq RESTART WITH 1;"
+                )
+                cursor.execute(
+                    "ALTER SEQUENCE accounts_customuser_id_seq RESTART WITH 1;"
+                )
 
     def test_file_download(self):
         file = UserFile(
@@ -64,8 +72,14 @@ class FileAPITestCase(APITransactionTestCase):
         url = reverse('file-download', kwargs={'pk': file.pk})
         response = self.client.get(url)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn(f'attachment; filename="{file.original_name}"', response['Content-Disposition'])
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+        self.assertIn(
+            f'attachment; filename="{file.original_name}"',
+            response['Content-Disposition']
+        )
 
     def test_shared_file_download(self):
         shared_link = '12345678-1234-5678-1234-567812345678'
@@ -78,37 +92,52 @@ class FileAPITestCase(APITransactionTestCase):
         )
         file.save()
 
-        self.client.logout()  # Разлогиниваемся, чтобы проверить доступ без авторизации
+        self.client.logout()
 
-        url = reverse('shared-file-download', kwargs={'shared_link': shared_link})
+        url = reverse(
+            'shared-file-download',
+            kwargs={'shared_link': shared_link}
+        )
         response = self.client.get(url)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn(f'attachment; filename="{file.original_name}"', response['Content-Disposition'])
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+        self.assertIn(
+            f'attachment; filename="{file.original_name}"',
+            response['Content-Disposition']
+        )
 
     def test_storage_quota_enforcement(self):
-        # Явно установим использование хранилища на максимум
-        self.user.max_storage = 100  # Маленькое значение для теста
+        self.user.max_storage = 100
         self.user.save()
-        
-        # Создаем файл, который заполнит всю квоту
-        test_content = b'x' * 100  # 100 байт
+
+        test_content = b'x' * 100
         test_file = SimpleUploadedFile('full.txt', test_content)
-        
-        # Создаем запись о файле (но не сам файл)
+
         UserFile.objects.create(
             user=self.user,
             size=100,
             file=test_file
         )
-        
-        # Попытка загрузить еще один файл
+
         new_file = SimpleUploadedFile('test.txt', b'123')
         url = reverse('file-list')
-        response = self.client.post(url, {'file': new_file}, format='multipart')
+        response = self.client.post(
+            url,
+            {'file': new_file},
+            format='multipart'
+        )
         
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn('exceeded', str(response.data).lower())
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_400_BAD_REQUEST
+        )
+        self.assertIn(
+            'exceeded',
+            str(response.data).lower()
+        )
 
     def test_admin_access_to_user_files(self):
         file = UserFile(
@@ -122,9 +151,18 @@ class FileAPITestCase(APITransactionTestCase):
 
         url = reverse('file-download', kwargs={'pk': file.pk})
         response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
 
         list_url = reverse('file-list') + f'?user_id={self.user.id}'
         response = self.client.get(list_url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+        self.assertEqual(
+            len(response.data),
+            1
+        )

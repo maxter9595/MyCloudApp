@@ -1,12 +1,12 @@
-# apps\accounts\tests\test_models.py
 import os
+
+from django.db import connection
+from django.core.cache import cache
+from django.test import TransactionTestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from apps.accounts.models import CustomUser
 from apps.storage.models import UserFile
-from django.core.cache import cache
-from django.core.files.uploadedfile import SimpleUploadedFile
-from django.db import connection
-from django.test import TransactionTestCase
 
 
 class CustomUserModelTest(TransactionTestCase):
@@ -18,9 +18,10 @@ class CustomUserModelTest(TransactionTestCase):
 
         if connection.vendor == 'postgresql':
             with connection.cursor() as cursor:
-                cursor.execute("TRUNCATE storage_userfile, accounts_customuser RESTART IDENTITY CASCADE;")
+                cursor.execute(
+                    "TRUNCATE storage_userfile, accounts_customuser RESTART IDENTITY CASCADE;"
+                )
 
-        # Create test user after clearing and resetting sequences
         self.user = CustomUser.objects.create_user(
             username='testuser',
             email='test@example.com',
@@ -28,7 +29,6 @@ class CustomUserModelTest(TransactionTestCase):
             password='testpass123',
             max_storage=100 * 1024 * 1024
         )
-        
 
     def test_storage_usage_calculation(self):
         test_content = b'This is a test file content'
@@ -38,14 +38,13 @@ class CustomUserModelTest(TransactionTestCase):
             content_type='text/plain'
         )
 
-        # Явно указываем ID или используем bulk_create для обхода автоинкремента
         user_file = UserFile(
             user=self.user,
             original_name='test_file.txt',
             file=test_file,
             size=len(test_content)
         )
-        user_file.save()  # Это может работать лучше, чем create()
+        user_file.save()
 
         usage = self.user.get_storage_usage()
         self.assertEqual(usage, len(test_content))
@@ -54,36 +53,29 @@ class CustomUserModelTest(TransactionTestCase):
         self.assertEqual(cached_usage, usage)
 
     def test_storage_usage_percent(self):
-        # Сбросим кеш перед тестом
         cache.delete(f'user_{self.user.id}_storage_usage')
         
-        test_size = 50 * 1024 * 1024  # 50MB
+        test_size = 50 * 1024 * 1024
         test_file = SimpleUploadedFile('test.txt', b'x' * test_size)
-        
-        # Создаем файл через API или напрямую
+
         UserFile.objects.create(
             user=self.user,
             file=test_file,
             size=test_size
         )
-        
-        # Явно обновим max_storage для предсказуемости
-        self.user.max_storage = 100 * 1024 * 1024  # 100MB
+        self.user.max_storage = 100 * 1024 * 1024
         self.user.save()
         
         percent = self.user.get_storage_usage_percent()
         self.assertEqual(percent, 50.0)
 
     def test_has_storage_space(self):
-        # 1. Очищаем кеш и базу
         cache.delete(f'user_{self.user.id}_storage_usage')
         UserFile.objects.filter(user=self.user).delete()
 
-        # 2. Явно задаём квоту (100MB)
         self.user.max_storage = 100 * 1024 * 1024
         self.user.save()
 
-        # 3. Создаём файл 50MB
         test_size = 50 * 1024 * 1024
         test_file = SimpleUploadedFile(
             'test_file.txt',
@@ -96,18 +88,15 @@ class CustomUserModelTest(TransactionTestCase):
             size=test_size
         )
 
-        # 4. Проверяем, что есть место для ещё 50MB (50 + 50 = 100)
         self.assertTrue(
             self.user.has_storage_space(50 * 1024 * 1024),
             "Должно быть место для 50MB"
         )
-
-        # 5. Проверяем, что нет места для 60MB (50 + 60 > 100)
         self.assertFalse(
             self.user.has_storage_space(60 * 1024 * 1024),
             "Не должно быть места для 60MB"
         )
-    
+
     def test_storage_path_auto_generation(self):
         new_user = CustomUser.objects.create_user(
             username='newuser',
@@ -115,7 +104,10 @@ class CustomUserModelTest(TransactionTestCase):
             full_name='New User',
             password='testpass123'
         )
-        self.assertEqual(new_user.storage_path, os.path.join('user_storage', f'user_{new_user.id}'))
+        self.assertEqual(
+            new_user.storage_path,
+            os.path.join('user_storage', f'user_{new_user.id}')
+        )
 
     def test_admin_user_creation(self):
         admin = CustomUser.objects.create_superuser(

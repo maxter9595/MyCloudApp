@@ -60,11 +60,98 @@
 2. **ReDoc** - альтернативное представление документации:
    - URL: `/api/redoc/`
 
-
 ### Доступ к схеме API
 
 Для разработчиков доступна raw-схема API в формате OpenAPI:
+
 - URL: `/api/schema/`
-  - Формат: YAML/JSON
+  - Формат: `YAML/JSON`
 
 ## 2. Инструкция по локальному запуску проекта
+
+### 2.1. Клонирование репозитория
+
+```bash
+git clone https://github.com/maxter9595/MyCloudApp.git
+cd MyCloudApp
+```
+
+### 2.2. Настройка переменных окружения
+
+```bash
+cp backend/.env_example backend/.env
+cp frontend/.env_example frontend/.env
+```
+
+### 2.3. Установка зависимостей и тестирование (фронтенд)
+
+```bash
+cd frontend
+npm install
+npm test
+cd ..
+```
+
+### 2.4. Запуск Docker
+
+```bash
+docker-compose up --build -d
+```
+
+### 2.5. Настройка администратора и тестирование (бэкенд)
+
+```bash
+docker-compose ps
+docker-compose exec backend python manage.py createsuperuser
+```
+
+* Данные администратора:
+
+```
+Логин: admin
+Email: admin@mail.ru
+Пароль: Admintest3273!
+```
+
+* Тестирование бэкенда:
+
+```bash
+docker-compose exec backend python manage.py test
+```
+
+### 2.6. Подключение к административной панели СУБД PostgreSQL
+
+* Ссылка для подключения: http://localhost:5050/browser/
+
+* Данные администратора БД для входа в админку PostgreSQL:
+
+```
+Почта: admin@example.com
+Пароль: admin123
+```
+
+* `Register...` ➝ `Server...`. Данные соединения:
+
+```
+Host: db
+Port: 5432
+Maintenance database: my_database
+Username: postgres
+Password: postgres
+```
+
+* Ключевые таблицы приложения из БД: `accounts_customuser`, `storage_userfile`
+
+### 2.7. Открытие приложения
+
+* Ссылка для открытия приложения: http://localhost:3000/
+
+* Возможные проблемы:
+
+  1. Ошибки портов: Убедитесь, что порты `8000`, `5050` и `5432` не заняты
+
+  2. PGAdmin не подключается к БД: Проверьте, что контейнер `db` запущен (`docker-compose ps`)
+
+  3. Проблемы с зависимостями: удалите папки `node_modules/` и `venv/`, затем пересоберите проект
+
+

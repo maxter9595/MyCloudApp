@@ -1,4 +1,3 @@
-// src/pages/index.js
 import { lazy } from 'react';
 
 // Core Pages

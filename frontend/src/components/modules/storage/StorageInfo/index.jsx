@@ -1,25 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { useSelector, useDispatch  } from 'react-redux';
 
-// import { fetchCurrentUser } from '../../store/slices/authSlice';
 import { fetchCurrentUser } from 'store/slices/authSlice';
 
 
-/**
- * Component that displays the 
- * user's storage usage with a 
- * progress bar. It fetches the 
- * current user's data every 3 
- * seconds and displays the used 
- * and total storage in GB. If 
- * the usage is higher than 90%,
- * it displays a warning message.
- *
- * @returns {ReactElement} The 
- * StorageInfo component
- * @example
- * <StorageInfo />
- */
 const StorageInfo = () => {
   const dispatch = useDispatch();
   const intervalRef = useRef(null);

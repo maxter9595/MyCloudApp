@@ -1,18 +1,9 @@
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-// import Cloud from '../assets/gin_mycloud.png';
 import Cloud from 'assets/png/gin_mycloud.png';
 
-/**
- * Component for the main
- * page of the application.
- *
- * Depending on the authentication
- * state, the component displays
- * either links to login and register
- * or a link to the storage page.
- */
+
 const HomePage = () => {
   const { isAuthenticated } = useSelector(
     (state) => state.auth

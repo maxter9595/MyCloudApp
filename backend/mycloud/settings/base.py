@@ -3,11 +3,11 @@ from pathlib import Path
 
 import environ
 
-# ======================
-# 1. Настройка окружения
-# ======================
+
+## ======================== ##
+## 1. Environment variables ##
+## ======================== ##
 env = environ.Env(
-    # Указываем типы и значения по умолчанию
     DEBUG=(bool, False),
     SECRET_KEY=(str, 'dummy-key-for-dev-only!change-me!'),
     ALLOWED_HOSTS=(list, ['127.0.0.1', 'localhost']),
@@ -22,13 +22,15 @@ env = environ.Env(
 )
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+env.read_env(
+    os.path.join(BASE_DIR, '.env'),
+    overwrite=True
+)
 
-# Читаем .env файл с явным указанием пути
-env.read_env(os.path.join(BASE_DIR, '.env'), overwrite=True)
 
-# ======================
-# 2. Основные настройки
-# ======================
+## ================= ##
+## 2. Basic settings ##
+## ================= ##
 SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG')
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
@@ -39,11 +41,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
 
-# ======================
-# 3. Installed Apps
-# ======================
+## ================= ##
+## 3. Installed Apps ##
+## ================= ##
 INSTALLED_APPS = [
-    # Django Core
+    ## Django Core ##
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -51,21 +53,22 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Third Party
+    ## Third Party ##
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
     'django_celery_beat',
     'django_redis',
 
-    # Local Apps
+    ## Local Apps ##
     'apps.accounts',
     'apps.storage',
 ]
 
-# ======================
-# 4. Middleware
-# ======================
+
+## ============= ##
+## 4. Middleware ##
+## ============= ##
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -78,9 +81,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# ======================
-# 5. Databases
-# ======================
+
+## ============ ##
+## 5. Databases ##
+## ============ ##
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -92,9 +96,10 @@ DATABASES = {
     }
 }
 
-# ======================
-# 6. Authentication
-# ======================
+
+## ================= ##
+## 6. Authentication ##
+## ================= ##
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -115,9 +120,10 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-# ======================
-# 7. REST Framework
-# ======================
+
+## ================= ##
+## 7. REST Framework ##
+## ================= ##
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
@@ -143,14 +149,16 @@ REST_FRAMEWORK = {
     }
 }
 
-# ======================
-# 8. CORS & Security
-# ======================
+
+## ================== ##
+## 8. CORS & Security ##
+## ================== ##
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS')
 CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
-CORS_ALLOW_ALL_ORIGINS = True
 
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS=True
+
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
@@ -165,30 +173,33 @@ CORS_ALLOW_HEADERS = [
 
 SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'
+
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE=False
 
-# ======================
-# 9. Internationalization
-# ======================
+
+## ======================= ##
+## 9. Internationalization ##
+## ======================= ##
 LANGUAGE_CODE = 'ru-ru'
 TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-# ======================
-# 10. Static & Media Files
-# ======================
-# settings/base.py
+
+## ======================== ##
+## 10. Static & Media Files ##
+## ======================== ##
 MEDIA_ROOT = '/app/backend/media'
 STATIC_ROOT = '/app/backend/static'
 MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
 
-# ======================
-# 11. Templates
-# ======================
+
+## ============= ##
+## 11. Templates ##
+## ============= ##
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -205,48 +216,55 @@ TEMPLATES = [
     },
 ]
 
-# ======================
-# 12. File Upload Settings
-# ======================
+
+## ======================== ##
+## 12. File Upload Settings ##
+## ======================== ##
 FILE_UPLOAD_MAX_MEMORY_SIZE = 2147483648  # 2GB
 DATA_UPLOAD_MAX_MEMORY_SIZE = 2147483648  # 2GB
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 1000
 
-# ======================
-# 13. Storage Quotas
-# ======================
+
+## ================== ##
+## 13. Storage Quotas ##
+## ================== ##
 DEFAULT_USER_BYTES = 5368709120  # 5GB
 MIN_USER_BYTES = 1048576  # 1MB
 MAX_ADMIN_BYTES = 10737418240  # 10GB
 
-# ======================
-# 14. Celery settings
-# ======================
+
+## =================== ##
+## 14. Celery settings ##
+## =================== ##
 CELERY_BROKER_URL = env('REDIS_URL')
 CELERY_RESULT_BACKEND = env('REDIS_URL')
+
 CELERY_TIMEZONE = 'Europe/Moscow'
-CELERY_BEAT_SCHEDULE_FILENAME = os.path.join(BASE_DIR, 'celerybeat-schedule')
+CELERY_BEAT_SCHEDULE_FILENAME = os.path.join(
+    BASE_DIR,
+    'celerybeat-schedule'
+)
 
 CELERY_IMPORTS = ('apps.storage.tasks',)
 CELERY_TASK_ALWAYS_EAGER = False
 CELERY_TASK_CREATE_MISSING_QUEUES = True
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
-# ======================
-# 15. Cache settings
-# ======================
+
+## ================== ##
+## 15. Cache settings ##
+## ================== ##
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": env('REDIS_CACHE_URL'),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "SOCKET_CONNECT_TIMEOUT": 5,  # seconds
-            "SOCKET_TIMEOUT": 5,  # seconds
+            "SOCKET_CONNECT_TIMEOUT": 5,
+            "SOCKET_TIMEOUT": 5,
         },
         "KEY_PREFIX": "mycloud"
     }
 }
 
-# Время жизни кеша по умолчанию (1 час)
 CACHE_TTL = 60 * 60

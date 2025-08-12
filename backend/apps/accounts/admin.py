@@ -1,6 +1,6 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
+from django.contrib.auth.admin import UserAdmin
 
 from .models import CustomUser
 
@@ -74,13 +74,6 @@ class CustomUserAdmin(UserAdmin):
     )
 
     def storage_usage_column(self, obj):
-        """
-        Generates a column in the admin interface that displays
-        a bar chart illustrating the user's current storage usage.
-
-        :param obj: The user object being rendered.
-        :return: A string containing the HTML for the bar chart.
-        """
         usage = obj.get_storage_usage()
         max_storage = obj.max_storage
         percent = (usage / max_storage) * 100 if max_storage else 0
@@ -98,6 +91,5 @@ class CustomUserAdmin(UserAdmin):
         )
 
     storage_usage_column.short_description = 'Storage usage'
-
 
 admin.site.register(CustomUser, CustomUserAdmin)

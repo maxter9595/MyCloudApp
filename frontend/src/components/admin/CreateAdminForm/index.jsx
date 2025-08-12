@@ -7,14 +7,7 @@ import {
     validateEmail,
 } from "utils/validators";
 
-/**
- * Form for creating a new admin user.
- * 
- * @param {{onSubmit: Function, onCancel: Function}} props - Component props
- * @prop {Function} onSubmit - Function to be called after submitting the form
- * @prop {Function} onCancel - Function to be called after cancelling the form
- * @returns {JSX.Element} - Form component
- */
+
 const CreateAdminForm = ({ onSubmit, onCancel }) => {
     return (
         <Formik

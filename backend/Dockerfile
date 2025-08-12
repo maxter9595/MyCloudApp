@@ -1,6 +1,5 @@
 FROM python:3.11-slim
 
-# Устанавливаем зависимости для PostgreSQL и healthcheck
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     curl \
@@ -9,13 +8,11 @@ RUN apt-get update && \
 
 WORKDIR /app
 
-# Копируем и устанавливаем Python-зависимости
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# Делаем entrypoint исполняемым
 RUN chmod +x /app/entrypoint.sh
 
 ENTRYPOINT ["/app/entrypoint.sh"]

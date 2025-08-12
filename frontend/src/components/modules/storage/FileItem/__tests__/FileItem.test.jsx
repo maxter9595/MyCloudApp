@@ -1,11 +1,12 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+
 import FileItem from '../index';
 
-// Mock react-icons
+
 jest.mock('react-icons/fa', () => ({
   FaDownload: () => <div>DownloadIcon</div>,
   FaEdit: () => <div>EditIcon</div>,
@@ -14,14 +15,12 @@ jest.mock('react-icons/fa', () => ({
   FaSpinner: () => <div>SpinnerIcon</div>,
 }));
 
-// Mock clipboard API
 Object.assign(navigator, {
   clipboard: {
     writeText: jest.fn(),
   },
 });
 
-// Mock window.alert
 window.alert = jest.fn();
 
 const middlewares = [thunk];
@@ -59,7 +58,6 @@ describe('FileItem Component', () => {
   });
 
   afterEach(() => {
-    // Восстанавливаем переменную окружения после каждого теста
     process.env.REACT_APP_API_BASE_URL = process.env.REACT_APP_API_BASE_URL_ORIG;
     console.error.mockRestore();
   });
@@ -86,7 +84,6 @@ describe('FileItem Component', () => {
       },
     });
 
-    // Mock the dispatch with unwrap support
     const mockPromise = Promise.resolve(new ArrayBuffer(8));
     mockPromise.unwrap = jest.fn(() => mockPromise);
     store.dispatch = jest.fn(() => mockPromise);
@@ -114,7 +111,6 @@ describe('FileItem Component', () => {
       files: { loading: false },
     });
 
-    // Мокаем dispatch, чтобы вернуть новый shared_link
     const mockResponse = { shared_link: 'new123' };
     const mockPromise = Promise.resolve(mockResponse);
     mockPromise.unwrap = jest.fn(() => mockPromise);
@@ -137,7 +133,6 @@ describe('FileItem Component', () => {
       },
     });
 
-    // Mock the dispatch with a promise that never resolves to keep the loading state
     const mockPromise = new Promise(() => {});
     mockPromise.unwrap = jest.fn(() => mockPromise);
     store.dispatch = jest.fn(() => mockPromise);
@@ -145,7 +140,6 @@ describe('FileItem Component', () => {
     renderComponent(mockFile, store);
     fireEvent.click(screen.getByText('DownloadIcon'));
 
-    // The spinner should appear after click
     await waitFor(() => {
       expect(screen.getByText('SpinnerIcon')).toBeInTheDocument();
     });
@@ -158,7 +152,6 @@ describe('FileItem Component', () => {
       },
     });
 
-    // Mock the dispatch with unwrap support
     const mockPromise = Promise.resolve({});
     mockPromise.unwrap = jest.fn(() => mockPromise);
     store.dispatch = jest.fn(() => mockPromise);
@@ -182,7 +175,6 @@ describe('FileItem Component', () => {
       files: { loading: false },
     });
 
-    // Мокаем dispatch, чтобы вернуть новый shared_link
     const mockResponse = { shared_link: 'fallback123' };
     const mockPromise = Promise.resolve(mockResponse);
     mockPromise.unwrap = jest.fn(() => mockPromise);

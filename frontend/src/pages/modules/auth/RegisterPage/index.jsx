@@ -9,15 +9,7 @@ import {
   RegisterForm
 } from 'components';
 
-/**
- * RegisterPage component renders the registration 
- * page for the application. It utilizes the Notification 
- * and RegisterForm components. The RegisterForm is connected 
- * to handleSubmit to dispatch register actions. The user is 
- * redirected to the storage page after a successful registration.
- * 
- * @returns {JSX.Element} The rendered registration page component.
- */
+
 const RegisterPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();

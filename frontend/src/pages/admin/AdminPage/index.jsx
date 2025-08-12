@@ -10,23 +10,7 @@ import  {
   CreateAdminForm
 } from 'components';
 
-/**
- * AdminPage is a page that displays a 
- * list of regular users and allows creating 
- * a new admin user, as well as changing the 
- * password of the current user.
- *
- * The page is divided into two main sections: 
- * the header and the content. The header contains 
- * a title and two buttons: "Create admin" and 
- * "Change password". The content section displays 
- * a table of users, which can be filtered by the
- * search input above the table.
- *
- * The page is responsive and will 
- * adapt to different screen sizes.
- * @returns {JSX.Element}
- */
+
 const AdminPage = () => {
   const dispatch = useDispatch();
   const abortControllerRef = useRef(null);
@@ -98,18 +82,6 @@ const AdminPage = () => {
     );
   });
 
-/**
- * Handles the creation of a new admin user.
- *
- * @param {Object} values - Form values 
- * containing the new admin user data.
- * @param {Object} formikHelpers - Object 
- * containing Formik helper functions.
- * @param {Function} formikHelpers.setSubmitting - 
- * Function to set the submitting state.
- * @param {Function} formikHelpers.setErrors - 
- * Function to set form errors.
- */
   const handleCreateAdmin = async (values, { setSubmitting, setErrors }) => {
     try {
       await usersApi.createAdmin(values);
@@ -124,13 +96,6 @@ const AdminPage = () => {
     }
   };
 
-/**
- * Handles changing the 
- * current user's password.
- *
- * @returns {Promise<void>} - Promise 
- * resolving when the operation is complete
- */
   const handleChangePassword = async () => {
     if (!newPassword) return;
 

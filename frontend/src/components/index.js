@@ -1,5 +1,3 @@
-// src/components/index.js
-
 // Core Components
 export { default as Header } from './core/ui/Header';
 export { default as Notification } from './core/ui/Notification';

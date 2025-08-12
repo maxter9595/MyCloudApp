@@ -1,5 +1,9 @@
 @import 'constants/index.css';
 
+/* ============================================= */
+/* Pagination Styles */
+/* ============================================= */
+
 .pagination {
   display: flex;
   justify-content: center;

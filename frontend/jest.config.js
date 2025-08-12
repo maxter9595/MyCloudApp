@@ -1,4 +1,3 @@
-// jest.config.js
 module.exports = {
   testEnvironment: 'jest-environment-jsdom',
   setupFilesAfterEnv: ['<rootDir>/src/setupTests.js'],
@@ -14,7 +13,6 @@ module.exports = {
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
   },
   transformIgnorePatterns: [
-    // Add any packages that need to be transformed (excluding node_modules except these)
     '/node_modules/(?!axios|other-module)'
   ],
   testPathIgnorePatterns: ['/node_modules/', '/build/'],

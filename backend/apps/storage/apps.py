@@ -1,4 +1,3 @@
-# backend/apps/storage/apps.py
 from django.apps import AppConfig
 
 
@@ -8,6 +7,5 @@ class StorageConfig(AppConfig):
     verbose_name = 'File storage'
 
     def ready(self):
-        # Принудительно импортируем задачи при запуске приложения
-        from . import tasks  # noqa
+        from . import tasks
         super().ready()

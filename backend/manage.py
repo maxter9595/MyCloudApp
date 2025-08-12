@@ -3,15 +3,10 @@ import sys
 
 
 def main():
-    """
-    Configure the environment for Django settings and execute the Django
-    command-line utility for administrative tasks. This function sets the
-    default settings module for the Django project, attempts to import the
-    Django management module, and executes the command line with the
-    provided arguments. Raises an ImportError if Django is not installed
-    or not available in the environment.
-    """
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mycloud.settings.local')
+    os.environ.setdefault(
+        'DJANGO_SETTINGS_MODULE',
+        'mycloud.settings.local'
+    )
 
     try:
         from django.core.management import execute_from_command_line

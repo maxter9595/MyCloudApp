@@ -1,5 +1,9 @@
 @import 'constants/index.css';
 
+/* ============================================= */
+/* Icon styles */
+/* ============================================= */
+
 .status-icon {
   position: absolute;
   right: 12px;

@@ -1,10 +1,10 @@
 import os
 
-from django.conf import settings
-from django.contrib.auth.models import AbstractUser
-from django.core.cache import cache
-from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
+from django.conf import settings
+from django.core.cache import cache
+from django.contrib.auth.models import AbstractUser
+from django.core.validators import MinValueValidator, RegexValidator
 
 
 class CustomUser(AbstractUser):
@@ -37,9 +37,6 @@ class CustomUser(AbstractUser):
     )
 
     def get_storage_usage(self):
-        """
-        Calculate the total storage usage for the user with caching
-        """
         cache_key = f'user_{self.id}_storage_usage'
         usage = cache.get(cache_key)
         
@@ -50,11 +47,10 @@ class CustomUser(AbstractUser):
                     file.size for file in
                     UserFile.objects.filter(user=self).only('size')
                 )
-                # Кешируем на 5 минут
                 cache.set(cache_key, usage, timeout=300)
             except Exception:
                 usage = 0
-                
+
         return usage
 
     def save(self, *args, **kwargs):
@@ -67,50 +63,25 @@ class CustomUser(AbstractUser):
                 self.is_staff = True
                 self.is_superuser = True
                 self.max_storage = settings.MAX_ADMIN_BYTES
+
         super().save(*args, **kwargs)
+
         if not self.storage_path:
             self.storage_path = os.path.join('user_storage', f'user_{self.id}')
             super().save(update_fields=['storage_path'])
-        
-        # Инвалидируем кеш использования хранилища
+
         cache.delete(f'user_{self.id}_storage_usage')
 
     def get_storage_usage_percent(self):
-        """
-        Calculate the percentage of
-        storage used by the user.
-
-        This method returns the result of get_storage_usage()
-        divided by max_storage, multiplied by 100. If max_storage
-        is 0, it returns 0.
-
-        :return: The percentage of storage used by the user.
-        """
         if self.max_storage == 0:
             return 0
         return (self.get_storage_usage() / self.max_storage) * 100
 
     def has_storage_space(self, additional_bytes=0):
-        """
-        Check if the user has enough storage
-        space to add additional bytes.
-
-        :param additional_bytes: The number
-        of bytes to add to the user's storage.
-        :return: True if the user has
-        enough space, False otherwise.
-        """
         new_storage_value = self.get_storage_usage() + additional_bytes
         return new_storage_value <= self.max_storage
 
     def __str__(self):
-        """
-        Return the string representation of the user.
-        This method returns the username of the user
-        as its string representation.
-
-        :return: The username of the user.
-        """
         return self.username
 
     class Meta:

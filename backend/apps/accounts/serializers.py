@@ -49,57 +49,26 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
     def get_storage_usage(self, obj):
-        """
-        Return the total storage usage for the user in bytes.
-
-        :param obj: The user object
-        :return: The total storage usage in bytes
-        """
         return obj.get_storage_usage()
 
     def get_max_storage_gb(self, obj):
-        """
-        Return the maximum storage limit for the user in gigabytes.
-
-        :param obj: The user object
-        :return: The maximum storage limit in gigabytes
-        """
         if obj.max_storage:
             return round(obj.max_storage / (1024 ** 3), 2)
         return 0
 
     def validate(self, data):
-        """
-        Validate that the password and confirmPassword fields match.
-
-        :param data: The validated data
-        :return: The validated data
-        """
         if 'password' in data and 'confirmPassword' in data:
             if data['password'] != data['confirmPassword']:
                 raise serializers.ValidationError("Passwords don't match")
         return data
 
     def to_representation(self, instance):
-        """
-        Customize the representation of the user object to include
-        the storage usage and maximum storage limit.
-
-        :param instance: The user object
-        :return: The customized representation of the user object
-        """
         representation = super().to_representation(instance)
         representation['storage_usage'] = self.get_storage_usage(instance)
         representation['max_storage_gb'] = self.get_max_storage_gb(instance)
         return representation
 
     def create(self, validated_data):
-        """
-        Create a new user.
-
-        :param validated_data: The validated data to create the user with
-        :return: The newly created user
-        """
         validated_data.pop('confirmPassword')
         is_superuser = validated_data.pop('is_superuser', False)
         is_staff = validated_data.pop('is_staff', False)
@@ -146,13 +115,6 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         ]
 
     def update(self, instance, validated_data):
-        """
-        Update a user instance with validated data.
-
-        :param instance: The user instance to update
-        :param validated_data: The validated data containing fields to update
-        :return: The updated user instance
-        """
         password = validated_data.pop('password', None)
         if password:
             instance.set_password(password)
@@ -164,12 +126,6 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField()
 
     def validate(self, data):
-        """
-        Validate that the username and password fields are present and non-empty.
-
-        :param data: The validated data
-        :return: The validated data
-        """
         return data
 
 
@@ -178,12 +134,6 @@ class AdminCreateSerializer(UserSerializer):
         fields = UserSerializer.Meta.fields
 
     def create(self, validated_data):
-        """
-        Create a new admin user instance with validated data.
-
-        :param validated_data: The validated data containing fields to create
-        :return: The created user instance
-        """
         validated_data.pop('confirmPassword', None)
         user = CustomUser.objects.create_user(
             username=validated_data['username'],

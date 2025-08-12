@@ -1,21 +1,42 @@
 from .base import *
 
+
+## ================= ##
+## 1. Debug settings ##
+## ================= ##
 DEBUG = True
 
+
+## =========================== ##
+## 2. Cookie and CSRF settings ##
+## =========================== ##
 CSRF_COOKIE_HTTPONLY = False
 SESSION_COOKIE_HTTPONLY = True
+
 SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'
 
-# Дополнительные приложения для разработки
-DEV_APPS = [
-    'drf_spectacular',
-    'django_extensions',  # Полезно для разработки
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000'
 ]
 
+
+## =========================== ##
+## 3. Development applications ##
+## =========================== ##
+DEV_APPS = [
+    'drf_spectacular',
+    'django_extensions',
+]
 INSTALLED_APPS += DEV_APPS
 
-# Настройки DRF Spectacular
+
+## =========================== ##
+## 4. DRF Spectacular settings ##
+## =========================== ##
 SPECTACULAR_SETTINGS = {
     'TITLE': 'MyCloud API (Development)',
     'DESCRIPTION': 'API documentation for development environment',
@@ -25,12 +46,10 @@ SPECTACULAR_SETTINGS = {
     'SCHEMA_PATH_PREFIX': '/api/',
 }
 
-# Упрощенные настройки безопасности для разработки
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SECURE = False
-CSRF_TRUSTED_ORIGINS = ['http://localhost:3000', 'http://127.0.0.1:3000']
 
-# Логирование для разработки
+## =================== ##
+## 5. Logging settings ##
+## =================== ##
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

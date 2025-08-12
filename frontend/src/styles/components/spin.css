@@ -1,5 +1,9 @@
 @import 'constants/index.css';
 
+/* ============================================= */
+/* Spin Styles */
+/* ============================================= */
+
 .spin {
   animation: spin 1s linear infinite;
 }

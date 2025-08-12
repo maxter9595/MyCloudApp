@@ -38,7 +38,6 @@ const RegisterForm = ({ onSubmit }) => {
   const debouncedPassword = useDebounce(password, 500);
   const debouncedConfirmPassword = useDebounce(confirmPassword, 500);
 
-  // Проверка уникальности логина
   useEffect(() => {
     if (debouncedUsername && validateUsername(debouncedUsername)) {
       setUsernameChecking(true);
@@ -57,7 +56,6 @@ const RegisterForm = ({ onSubmit }) => {
     }
   }, [debouncedUsername]);
 
-  // Проверка уникальности email
   useEffect(() => {
     if (debouncedEmail && validateEmail(debouncedEmail)) {
       setEmailChecking(true);
@@ -76,7 +74,6 @@ const RegisterForm = ({ onSubmit }) => {
     }
   }, [debouncedEmail]);
 
-  // Валидация пароля
   useEffect(() => {
     if (!debouncedPassword) {
       setPasswordError(null);
@@ -96,7 +93,6 @@ const RegisterForm = ({ onSubmit }) => {
     }
   }, [debouncedPassword]);
 
-  // Валидация подтверждения пароля
   useEffect(() => {
     if (!debouncedConfirmPassword) {
       setConfirmPasswordError(null);
@@ -137,7 +133,6 @@ const RegisterForm = ({ onSubmit }) => {
     setExternalValue(value);
     setFieldValue(name, value);
     
-    // Сбрасываем ошибки при изменении
     switch (name) {
       case 'username':
         if (usernameError) setUsernameError(null);
@@ -200,7 +195,6 @@ const RegisterForm = ({ onSubmit }) => {
       })}
 
       onSubmit={(values, actions) => {
-        // Проверяем наличие ошибок перед отправкой
         if (usernameError || emailError || passwordError || confirmPasswordError) {
           actions.setSubmitting(false);
           return;
@@ -216,7 +210,7 @@ const RegisterForm = ({ onSubmit }) => {
         setFieldValue,
       }) => (
         <form onSubmit={handleSubmit} className="auth-form">
-          {/* Поле username */}
+          {/* Username field */}
           <div className={`form-group ${getFieldStatus('username', touched.username, errors.username || usernameError, usernameChecking)}`}>
             <label htmlFor="username">
               Логин
@@ -241,7 +235,7 @@ const RegisterForm = ({ onSubmit }) => {
             )}
           </div>
 
-          {/* Поле email */}
+          {/* Email field */}
           <div className={`form-group ${getFieldStatus('email', touched.email, errors.email || emailError, emailChecking)}`}>
             <label htmlFor="email">
               Email
@@ -266,7 +260,7 @@ const RegisterForm = ({ onSubmit }) => {
             )}
           </div>
 
-          {/* Поле full_name */}
+          {/* full_name field */}
           <div className={`form-group ${getFieldStatus('full_name', touched.full_name, errors.full_name, false)}`}>
             <label htmlFor="full_name">
               Полное имя
@@ -287,7 +281,7 @@ const RegisterForm = ({ onSubmit }) => {
             )}
           </div>
 
-          {/* Поле password */}
+          {/* Password field */}
           <div className={`form-group ${getFieldStatus('password', touched.password, errors.password || passwordError, false)}`}>
             <label htmlFor="password">
               Пароль
@@ -312,7 +306,7 @@ const RegisterForm = ({ onSubmit }) => {
             )}
           </div>
 
-          {/* Поле confirmPassword */}
+          {/* confirmPassword field */}
           <div className={`form-group ${getFieldStatus('confirmPassword', touched.confirmPassword, errors.confirmPassword || confirmPasswordError, false)}`}>
             <label htmlFor="confirmPassword">
               Подтвердите пароль

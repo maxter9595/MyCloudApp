@@ -1,11 +1,16 @@
 import api from './index';
 
+
 const usersApi = {
   getUsers: (signal) => api.get(
     '/auth/users/',
     { signal }
+  
   ).then(response => {
-    console.log('Users data from API:', response.data);
+    console.log(
+      'Users data from API:', 
+      response.data
+    );
     return response;
   }),
 
