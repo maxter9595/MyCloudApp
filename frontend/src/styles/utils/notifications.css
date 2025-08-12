@@ -1,0 +1,17 @@
+@import 'constants/index.css';
+
+/* ============================================= */
+/* Notification Styles */
+/* ============================================= */
+
+.notification {
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+}
+
+.notification.error {
+  background: #fff2f0;
+  border-left: 4px solid var(--error-color);
+  color: var(--error-color);
+}

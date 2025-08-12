@@ -1,0 +1,35 @@
+@import 'constants/index.css';
+
+/* ============================================= */
+/* Home Page Styles */
+/* ============================================= */
+
+.home-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 80px);
+  text-align: center;
+  padding: 2rem;
+}
+
+.cloud-bg {
+  width: 325px;
+  height: 325px;
+  margin-bottom: 2rem;
+  animation: float 6s ease-in-out infinite;
+}
+
+.home-page h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+
+.home-page p {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  max-width: 600px;
+}

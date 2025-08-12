@@ -1,0 +1,153 @@
+@import 'constants/index.css';
+
+/* ============================================= */
+/* Button Styles */
+/* ============================================= */
+
+.btn {
+  padding: 0.5rem 0.6rem;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  color: white;
+  border: 1px solid var(--primary-color);
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.btn-outline:hover {
+  background: rgba(24, 144, 255, 0.1);
+}
+
+.btn-exit {
+  padding: 12.5px;
+}
+
+.action-btn {
+  padding: 0.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin: 0.25rem;
+}
+
+.action-btn.delete {
+  background: var(--error-color);
+  color: white;
+}
+
+.action-btn.delete:hover {
+  background: #ff7875;
+}
+
+.action-btn.change-password {
+  background: var(--primary-color);
+  color: white;
+}
+
+.action-btn.change-password:hover {
+  background: var(--primary-hover);
+}
+
+.action-btn.activate {
+  background: var(--success-color);
+  color: white;
+}
+
+.action-btn.deactivate {
+  background: var(--warning-color);
+  color: white;
+}
+
+.action-btn.change-storage {
+  background: #722ed1;
+  color: white;
+}
+
+.action-btn.change-storage:hover {
+  background: #9254de;
+}
+
+.cancel-btn {
+  padding: 0.75rem 1.5rem;
+  background: white;
+  color: var(--error-color);
+  border: 1px solid var(--error-color);
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.cancel-btn:hover {
+  background: #fff2f0;
+}
+
+
+.file-actions button {
+  padding: 0.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+}
+
+.file-actions button:first-child {
+  background: var(--primary-color);
+  color: white;
+}
+
+.file-actions button:first-child:hover {
+  background: var(--primary-hover);
+}
+
+.file-actions button:nth-child(2) {
+  background: var(--warning-color);
+  color: white;
+}
+
+.file-actions button:nth-child(2):hover {
+  background: #ffc53d;
+}
+
+.file-actions button:nth-child(3) {
+  background: var(--warning-color);
+  color: white;
+}
+
+.file-actions button:nth-child(3):hover {
+  background: #ffc53d;
+}
+
+.file-actions button:last-child {
+  background: var(--error-color);
+  color: white;
+}
+
+.file-actions button:last-child:hover {
+  background: #ff7875;
+}

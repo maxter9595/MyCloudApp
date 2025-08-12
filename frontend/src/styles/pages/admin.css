@@ -1,0 +1,146 @@
+@import 'constants/index.css';
+
+/* ============================================= */
+/* Admin Page Styles */
+/* ============================================= */
+
+.admin-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.admin-page h1 {
+  color: var(--primary-color);
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.admin-title {
+  color: var(--primary-color);
+  margin: 0;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.admin-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+}
+
+.admin-btn.create-admin {
+  background: var(--primary-color);
+  color: white;
+}
+
+.admin-btn.create-admin:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+}
+
+.admin-btn.change-password {
+  background: #722ed1;
+  color: white;
+}
+
+.admin-btn.change-password:hover {
+  background: #9254de;
+  transform: translateY(-2px);
+}
+
+.admin-content {
+  background: var(--card-background);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 2rem;
+  margin-top: 1rem;
+}
+
+/* Users Section Styles */
+
+.users-section {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) #f1f1f1;
+  animation: fadeIn 0.3s ease-out;
+  margin-top: 1.5rem;
+}
+
+.users-section::-webkit-scrollbar {
+  height: 6px;
+}
+
+.users-section::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.users-section::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 3px;
+}
+
+.user-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+}
+
+.user-table th {
+  position: sticky;
+  top: 0;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 500;
+  color: var(--text-color);
+  border-bottom: 2px solid var(--border-color);
+  z-index: 10;
+  background: #f8f9fa;
+}
+
+.user-table tr {
+  transition: background-color 0.2s;
+}
+
+.user-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.user-table tr:last-child td {
+  border-bottom: none;
+}
+
+.user-table tr:hover {
+  background-color: rgba(24, 144, 255, 0.05);
+}
+
+.user-table tr.selected {
+  background-color: rgba(24, 144, 255, 0.1);
+}
+
+/* Actions Cell Styles */
+
+.actions-cell {
+  position: relative;
+}
