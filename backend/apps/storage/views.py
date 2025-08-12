@@ -189,6 +189,9 @@ class FileDownloadView(generics.GenericAPIView):
             if not user_file.file:
                 raise Http404("File not found")
 
+            user_file.last_download = timezone.now()
+            user_file.save(update_fields=['last_download'])
+
             file_path = user_file.file.path
             if not os.path.exists(file_path):
                 raise Http404("File not found on disk")
