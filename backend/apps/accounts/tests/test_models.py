@@ -14,6 +14,7 @@ class CustomUserModelTest(TransactionTestCase):
 
     def setUp(self):
         cache.clear()
+        UserFile.objects.all().delete()
 
         if connection.vendor == 'postgresql':
             with connection.cursor() as cursor:
@@ -53,30 +54,60 @@ class CustomUserModelTest(TransactionTestCase):
         self.assertEqual(cached_usage, usage)
 
     def test_storage_usage_percent(self):
+        # Сбросим кеш перед тестом
+        cache.delete(f'user_{self.user.id}_storage_usage')
+        
         test_size = 50 * 1024 * 1024  # 50MB
+        test_file = SimpleUploadedFile('test.txt', b'x' * test_size)
+        
+        # Создаем файл через API или напрямую
         UserFile.objects.create(
             user=self.user,
-            original_name='test_file.txt',
-            file=None,
+            file=test_file,
             size=test_size
         )
-
+        
+        # Явно обновим max_storage для предсказуемости
+        self.user.max_storage = 100 * 1024 * 1024  # 100MB
+        self.user.save()
+        
         percent = self.user.get_storage_usage_percent()
-        expected_percent = (test_size / self.user.max_storage) * 100
-        self.assertEqual(percent, expected_percent)
+        self.assertEqual(percent, 50.0)
 
     def test_has_storage_space(self):
-        test_size = 50 * 1024 * 1024  # 50MB
+        # 1. Очищаем кеш и базу
+        cache.delete(f'user_{self.user.id}_storage_usage')
+        UserFile.objects.filter(user=self.user).delete()
+
+        # 2. Явно задаём квоту (100MB)
+        self.user.max_storage = 100 * 1024 * 1024
+        self.user.save()
+
+        # 3. Создаём файл 50MB
+        test_size = 50 * 1024 * 1024
+        test_file = SimpleUploadedFile(
+            'test_file.txt',
+            b'x' * test_size,
+            content_type='text/plain'
+        )
         UserFile.objects.create(
             user=self.user,
-            original_name='test_file.txt',
-            file=None,
+            file=test_file,
             size=test_size
         )
 
-        self.assertTrue(self.user.has_storage_space(50 * 1024 * 1024))
-        self.assertFalse(self.user.has_storage_space(60 * 1024 * 1024))
+        # 4. Проверяем, что есть место для ещё 50MB (50 + 50 = 100)
+        self.assertTrue(
+            self.user.has_storage_space(50 * 1024 * 1024),
+            "Должно быть место для 50MB"
+        )
 
+        # 5. Проверяем, что нет места для 60MB (50 + 60 > 100)
+        self.assertFalse(
+            self.user.has_storage_space(60 * 1024 * 1024),
+            "Не должно быть места для 60MB"
+        )
+    
     def test_storage_path_auto_generation(self):
         new_user = CustomUser.objects.create_user(
             username='newuser',

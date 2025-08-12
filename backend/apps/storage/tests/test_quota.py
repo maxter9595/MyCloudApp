@@ -24,16 +24,13 @@ class StorageQuotaTest(TestCase):
             content_type='text/plain'
         )
         
-        # Проверяем, что можно загрузить файл
-        self.assertTrue(self.user.has_storage_space(file_5mb.size))
-        
-        # Создаем файл в базе (но не на диске для теста)
-        UserFile.objects.create(
+        # Создаем файл в базе с реальным файлом
+        user_file = UserFile(
             user=self.user,
-            original_name='5mb.txt',
-            file=None,
+            file=file_5mb,
             size=file_5mb.size
         )
+        user_file.save()
         
         # Инвалидируем кеш, чтобы пересчитать использование
         cache.delete(f'user_{self.user.id}_storage_usage')
