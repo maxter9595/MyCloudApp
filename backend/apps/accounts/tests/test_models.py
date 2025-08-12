@@ -1,11 +1,12 @@
 # apps\accounts\tests\test_models.py
+import os
+
+from apps.accounts.models import CustomUser
+from apps.storage.models import UserFile
 from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import connection
 from django.test import TransactionTestCase
-
-from apps.accounts.models import CustomUser
-from apps.storage.models import UserFile
 
 
 class CustomUserModelTest(TransactionTestCase):
@@ -26,6 +27,7 @@ class CustomUserModelTest(TransactionTestCase):
             password='testpass123',
             max_storage=100 * 1024 * 1024
         )
+        
 
     def test_storage_usage_calculation(self):
         test_content = b'This is a test file content'
@@ -82,7 +84,7 @@ class CustomUserModelTest(TransactionTestCase):
             full_name='New User',
             password='testpass123'
         )
-        self.assertEqual(new_user.storage_path, f'user_{new_user.id}_storage')
+        self.assertEqual(new_user.storage_path, os.path.join('user_storage', f'user_{new_user.id}'))
 
     def test_admin_user_creation(self):
         admin = CustomUser.objects.create_superuser(

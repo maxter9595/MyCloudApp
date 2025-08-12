@@ -74,6 +74,20 @@ export const updateFile = createAsyncThunk(
   }
 );
 
+export const updateSharedExpiry = createAsyncThunk(
+  'files/updateSharedExpiry',
+  async ({ id, expiryDays }, { rejectWithValue, signal }) => {
+    try {
+      const response = await filesApi.updateFile(id, { 
+        expiry_days: expiryDays 
+      }, signal);
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response.data || 'Ошибка обновления срока действия ссылки');
+    }
+  }
+);
+
 const filesSlice = createSlice({
   name: 'files',
   initialState: {
@@ -121,6 +135,12 @@ const filesSlice = createSlice({
       })
       .addCase(deleteFile.fulfilled, (state, action) => {
         state.files = state.files.filter(file => file.id !== action.payload);
+      })
+      .addCase(updateSharedExpiry.fulfilled, (state, action) => {
+        const index = state.files.findIndex(f => f.id === action.payload.id);
+        if (index !== -1) {
+          state.files[index] = action.payload;
+        }
       });
   },
 });

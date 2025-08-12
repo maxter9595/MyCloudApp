@@ -1,5 +1,6 @@
 import os
 import uuid
+from datetime import timedelta
 
 from apps.accounts.models import CustomUser
 from django.core.cache import cache
@@ -163,9 +164,15 @@ class FileDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def perform_update(self, serializer):
         instance = serializer.save()
-        instance.last_download = None
-        instance.save()
-        
+        # instance.last_download = None
+        # instance.save()
+
+        expiry_days = self.request.data.get('expiry_days')
+
+        if expiry_days:
+            instance.shared_expiry = timezone.now() + timedelta(days=int(expiry_days))
+            instance.save(update_fields=['shared_expiry'])
+
         # Инвалидируем кеш списка файлов
         cache_key = f'user_files_{instance.user.id}'
         cache.delete(cache_key)
@@ -282,14 +289,19 @@ class FileShareView(generics.UpdateAPIView):
         Creates or updates a shared link for a file
         """
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data)
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
+
+        serializer.save()
+
+        # serializer.save(shared_link=uuid.uuid4())
+
+        # if 'expiry_days' not in request.data:
+        #     instance.shared_expiry = None
+        #     instance.save()
         
-        if 'expiry_days' not in request.data:
-            instance.shared_expiry = None
-        
-        instance.shared_link = uuid.uuid4()
-        instance.save()
+        # instance.shared_link = uuid.uuid4()
+        # instance.save()
         
         # Инвалидируем кеш списка файлов
         cache_key = f'user_files_{instance.user.id}'

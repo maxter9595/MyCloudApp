@@ -1,5 +1,6 @@
 import os
 import uuid
+from datetime import timedelta
 
 from apps.accounts.models import CustomUser
 from django.db import models
@@ -82,22 +83,33 @@ class UserFile(models.Model):
         
     #     super().save(*args, **kwargs)
 
+    # def save(self, *args, **kwargs):
+    #     is_new = self.pk is None
+    #     if is_new:
+    #         self.original_name = os.path.basename(self.file.name)
+    #         self.size = self.file.size
+
+    #     super().save(*args, **kwargs)
+
+    #     if is_new:
+    #         old_path = self.file.path
+    #         new_file_name = self.file.field.upload_to(self, self.original_name)
+    #         self.file.name = new_file_name
+    #         os.makedirs(os.path.dirname(self.file.path), exist_ok=True)
+    #         if os.path.exists(old_path):
+    #             os.rename(old_path, self.file.path)
+    #         super().save(update_fields=['file'])
+
+
     def save(self, *args, **kwargs):
         is_new = self.pk is None
         if is_new:
             self.original_name = os.path.basename(self.file.name)
             self.size = self.file.size
-
+            # Задаём дефолтный срок действия ссылки, например 7 дней от загрузки
+            if self.shared_expiry is None:
+                self.shared_expiry = timezone.now() + timedelta(days=7)
         super().save(*args, **kwargs)
-
-        if is_new:
-            old_path = self.file.path
-            new_file_name = self.file.field.upload_to(self, self.original_name)
-            self.file.name = new_file_name
-            os.makedirs(os.path.dirname(self.file.path), exist_ok=True)
-            if os.path.exists(old_path):
-                os.rename(old_path, self.file.path)
-            super().save(update_fields=['file'])
 
     def delete(self, *args, **kwargs):
         """

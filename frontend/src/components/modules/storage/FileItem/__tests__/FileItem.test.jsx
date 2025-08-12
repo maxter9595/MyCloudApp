@@ -110,12 +110,22 @@ describe('FileItem Component', () => {
   it('copies download link when copy link button is clicked', async () => {
     process.env.REACT_APP_API_BASE_URL = 'http://test.com';
 
-    renderComponent();
+    const store = mockStore({
+      files: { loading: false },
+    });
+
+    // Мокаем dispatch, чтобы вернуть новый shared_link
+    const mockResponse = { shared_link: 'new123' };
+    const mockPromise = Promise.resolve(mockResponse);
+    mockPromise.unwrap = jest.fn(() => mockPromise);
+    store.dispatch = jest.fn(() => mockPromise);
+
+    renderComponent(mockFile, store);
     fireEvent.click(screen.getByText('LinkIcon'));
 
     await waitFor(() => {
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
-        'http://test.com/storage/shared/abc123/'
+        'http://test.com/storage/shared/new123/'
       );
     });
   });
@@ -167,10 +177,21 @@ describe('FileItem Component', () => {
 
   it('falls back to execCommand when clipboard API fails', async () => {
     process.env.REACT_APP_API_BASE_URL = 'http://test.com';
+
+    const store = mockStore({
+      files: { loading: false },
+    });
+
+    // Мокаем dispatch, чтобы вернуть новый shared_link
+    const mockResponse = { shared_link: 'fallback123' };
+    const mockPromise = Promise.resolve(mockResponse);
+    mockPromise.unwrap = jest.fn(() => mockPromise);
+    store.dispatch = jest.fn(() => mockPromise);
+
     navigator.clipboard.writeText.mockRejectedValueOnce(new Error('Clipboard error'));
     document.execCommand = jest.fn().mockReturnValue(true);
 
-    renderComponent();
+    renderComponent(mockFile, store);
     fireEvent.click(screen.getByText('LinkIcon'));
 
     await waitFor(() => {

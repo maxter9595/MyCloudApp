@@ -12,7 +12,8 @@ import {
 import {
   deleteFile,
   downloadFile,
-  updateFile
+  updateFile,
+  updateSharedExpiry
 } from 'store/slices/filesSlice';
 
 const FileItem = memo(({ file }) => {
@@ -70,35 +71,105 @@ const FileItem = memo(({ file }) => {
     }
   };
 
-  const copyDownloadLink = async () => {
-    const apiBase = process.env.REACT_APP_API_BASE_URL;
-    const downloadLink = `${apiBase}/storage/shared/${file.shared_link}`;
-    const downloadLinkWithSlash = `${downloadLink}/`;
+  // const copyDownloadLink = async () => {
+  //   const apiBase = process.env.REACT_APP_API_BASE_URL;
+  //   const downloadLink = `${apiBase}/storage/shared/${file.shared_link}`;
+  //   const downloadLinkWithSlash = `${downloadLink}/`;
 
+  //   try {
+  //     await navigator.clipboard.writeText(downloadLinkWithSlash);
+  //     alert('Ссылка скопирована!');
+  //   } catch (err) {
+  //     console.error('Ошибка копирования (Clipboard API):', err);
+  //     try {
+  //       const textarea = document.createElement('textarea');
+  //       textarea.value = downloadLinkWithSlash;
+  //       textarea.style.position = 'fixed';
+  //       document.body.appendChild(textarea);
+  //       textarea.select();
+        
+  //       const success = document.execCommand('copy');
+  //       document.body.removeChild(textarea);
+        
+  //       if (success) {
+  //         alert('Ссылка скопирована');
+  //       } else {
+  //         alert(`Ссылка для скачивания файла: ${downloadLink}`);
+  //       }
+  //     } catch (fallbackError) {
+  //       console.error('Ошибка fallback-копирования:', fallbackError);
+  //       alert(`Не удалось скопировать автоматически. Ссылка: ${downloadLink}`);
+  //     }
+  //   }
+  // };
+
+  // const copyDownloadLink = async () => {
+  //   const apiBase = process.env.REACT_APP_API_BASE_URL;
+  //   const downloadLink = `${apiBase}/storage/shared/${file.shared_link}`;
+  //   const downloadLinkWithSlash = `${downloadLink}/`;
+
+  //   try {
+  //     // Сначала обновляем срок действия ссылки (например, на 7 дней)
+  //     await dispatch(updateSharedExpiry({ 
+  //       id: file.id, 
+  //       expiryDays: 7 
+  //     })).unwrap();
+
+  //     // Затем копируем ссылку
+  //     await navigator.clipboard.writeText(downloadLinkWithSlash);
+  //     alert('Ссылка скопирована и срок действия обновлен!');
+  //   } catch (err) {
+  //     console.error('Ошибка копирования (Clipboard API):', err);
+  //     try {
+  //       const textarea = document.createElement('textarea');
+  //       textarea.value = downloadLinkWithSlash;
+  //       textarea.style.position = 'fixed';
+  //       document.body.appendChild(textarea);
+  //       textarea.select();
+        
+  //       const success = document.execCommand('copy');
+  //       document.body.removeChild(textarea);
+        
+  //       if (success) {
+  //         alert('Ссылка скопирована (срок действия также обновлен)');
+  //       } else {
+  //         alert(`Ссылка для скачивания файла: ${downloadLink}`);
+  //       }
+  //     } catch (fallbackError) {
+  //       console.error('Ошибка fallback-копирования:', fallbackError);
+  //       alert(`Не удалось скопировать автоматически. Ссылка: ${downloadLink}`);
+  //     }
+  //   }
+  // };
+
+  const copyDownloadLink = async () => {
     try {
-      await navigator.clipboard.writeText(downloadLinkWithSlash);
-      alert('Ссылка скопирована!');
-    } catch (err) {
-      console.error('Ошибка копирования (Clipboard API):', err);
+      // Сначала обновляем срок действия ссылки на бэкенде
+      const response = await dispatch(updateSharedExpiry({ 
+        id: file.id, 
+        expiryDays: 7// Устанавливаем срок 7 дней
+      })).unwrap();
+
+      // Затем копируем ссылку
+      const apiBase = process.env.REACT_APP_API_BASE_URL;
+      const downloadLink = `${apiBase}/storage/shared/${response.shared_link}/`;
+      
       try {
+        await navigator.clipboard.writeText(downloadLink);
+        alert('Ссылка скопирована! Срок действия: 7 дней');
+      } catch (err) {
+        // Fallback для старых браузеров
         const textarea = document.createElement('textarea');
-        textarea.value = downloadLinkWithSlash;
-        textarea.style.position = 'fixed';
+        textarea.value = downloadLink;
         document.body.appendChild(textarea);
         textarea.select();
-        
-        const success = document.execCommand('copy');
+        document.execCommand('copy');
         document.body.removeChild(textarea);
-        
-        if (success) {
-          alert('Ссылка скопирована');
-        } else {
-          alert(`Ссылка для скачивания файла: ${downloadLink}`);
-        }
-      } catch (fallbackError) {
-        console.error('Ошибка fallback-копирования:', fallbackError);
-        alert(`Не удалось скопировать автоматически. Ссылка: ${downloadLink}`);
+        alert('Ссылка скопирована в буфер обмена!');
       }
+    } catch (error) {
+      console.error('Ошибка при обновлении ссылки:', error);
+      alert('Не удалось обновить ссылку');
     }
   };
 
