@@ -1,5 +1,5 @@
 # Этап сборки
-FROM node:18-alpine as builder
+FROM node:20.14.0-alpine as builder
 
 WORKDIR /app
 COPY package*.json ./
