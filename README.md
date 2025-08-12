@@ -121,7 +121,7 @@ docker-compose exec backend python manage.py test
 
 ### 2.6. Подключение к административной панели СУБД PostgreSQL
 
-* Ссылка для подключения: http://localhost:5050/browser/
+* Ссылка для подключения: http://localhost:5050/
 
 * Данные администратора БД для входа в админку PostgreSQL:
 
