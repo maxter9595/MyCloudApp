@@ -1,15 +1,9 @@
 FROM python:3.11-slim-bookworm
 
-RUN mkdir -p /etc/apt/sources.list.d && \
-    echo "deb http://mirror.yandex.ru/debian bookworm main" > /etc/apt/sources.list && \
-    echo "deb http://mirror.yandex.ru/debian bookworm-updates main" >> /etc/apt/sources.list && \
-    echo "deb http://mirror.yandex.ru/debian-security bookworm-security main" >> /etc/apt/sources.list && \
-    apt-get update && \
-    apt-get install --yes --no-install-recommends \
+RUN apt-get update && \
+    apt-get -qq -y install \
     curl \
-    postgresql-client \
-    build-essential \
-    libpq-dev && \
+    postgresql-client && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
