@@ -1,7 +1,6 @@
 FROM python:3.11-slim-bookworm
 
-RUN sed -i 's/deb.debian.org/mirror.yandex.ru/g' /etc/apt/sources.list && \
-    apt-get update && \
+RUN apt-get update -o Acquire::Retries=3 -o Acquire::http::Timeout=30 && \
     apt-get install -y --no-install-recommends \
     curl \
     postgresql-client \
