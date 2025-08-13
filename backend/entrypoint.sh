@@ -1,9 +1,9 @@
 #!/bin/sh
 
-echo "Waiting for PostgreSQL..."
-until pg_isready -h db -U postgres; do
-    sleep 2
-done
+# echo "Waiting for PostgreSQL..."
+# until pg_isready -h db -U postgres; do
+#     sleep 2
+# done
 
 mkdir -p /app/backend/media
 mkdir -p /app/backend/static
