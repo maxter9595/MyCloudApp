@@ -1,12 +1,14 @@
-FROM python:3.12-alpine
+FROM ubuntu:22.04
 
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    python3-pip \
+    python3-dev \
+    build-essential \
+    libpq-dev \
     curl \
-    postgresql-client \
-    build-base \
-    postgresql-dev \
-    bash \
-    git
+    git \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
