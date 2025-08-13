@@ -1,13 +1,10 @@
 FROM ubuntu:22.04
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3 \
-    python3-pip \
-    python3-dev \
-    build-essential \
-    libpq-dev \
+RUN apt-get update && apt install -qq -y \
     curl \
-    git \
+    postgresql-client \
+    build-essential \
+    libpq-dev && \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
