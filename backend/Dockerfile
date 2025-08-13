@@ -1,11 +1,15 @@
 FROM python:3.11-slim-bookworm
 
-RUN echo "deb http://mirror.yandex.ru/debian bullseye main" > /etc/apt/sources.list && \
-    echo "deb http://mirror.yandex.ru/debian bullseye-updates main" >> /etc/apt/sources.list && \
-    echo "deb http://mirror.yandex.ru/debian-security bullseye-security main" >> /etc/apt/sources.list && \
+RUN mkdir -p /etc/apt/sources.list.d && \
+    echo "deb http://mirror.yandex.ru/debian bookworm main" > /etc/apt/sources.list && \
+    echo "deb http://mirror.yandex.ru/debian bookworm-updates main" >> /etc/apt/sources.list && \
+    echo "deb http://mirror.yandex.ru/debian-security bookworm-security main" >> /etc/apt/sources.list && \
     apt-get update -o Acquire::Retries=3 -o Acquire::http::Timeout=30 && \
-    apt-get install -y --no-install-recommends \
+    apt-get install --yes --no-install-recommends \
     curl \
+    git \
+    wget \
+    unzip \
     postgresql-client \
     build-essential \
     libpq-dev && \
