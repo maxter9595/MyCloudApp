@@ -1,16 +1,15 @@
-FROM python:3.11-slim-bookworm
+FROM python:3.11-slim
 
-# RUN apt-get update && apt install -qq -y \
-#     curl \
-#     postgresql-client \
-#     build-essential \
-#     libpq-dev && \
-#     rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    curl \
+    postgresql-client && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir --default-timeout=100 -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
