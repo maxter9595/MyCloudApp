@@ -1,10 +1,12 @@
-FROM python:3.11-slim-bookworm
+FROM python:3.12-alpine
 
-RUN apt-get update && \
-    apt-get -qq -y install \
+RUN apk add --no-cache \
     curl \
-    postgresql-client && \
-    rm -rf /var/lib/apt/lists/*
+    postgresql-client \
+    build-base \
+    postgresql-dev \
+    bash \
+    git
 
 WORKDIR /app
 
