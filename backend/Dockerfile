@@ -4,7 +4,7 @@ RUN mkdir -p /etc/apt/sources.list.d && \
     echo "deb http://mirror.yandex.ru/debian bookworm main" > /etc/apt/sources.list && \
     echo "deb http://mirror.yandex.ru/debian bookworm-updates main" >> /etc/apt/sources.list && \
     echo "deb http://mirror.yandex.ru/debian-security bookworm-security main" >> /etc/apt/sources.list && \
-    apt-get update -o Acquire::Retries=3 -o Acquire::http::Timeout=30 && \
+    apt-get update -o Acquire::Retries=3 && \
     apt-get install --yes --no-install-recommends \
     curl \
     git \
