@@ -7,9 +7,6 @@ RUN mkdir -p /etc/apt/sources.list.d && \
     apt-get update -o Acquire::Retries=3 && \
     apt-get install --yes --no-install-recommends \
     curl \
-    git \
-    wget \
-    unzip \
     postgresql-client \
     build-essential \
     libpq-dev && \
