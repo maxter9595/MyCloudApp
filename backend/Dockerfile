@@ -1,6 +1,9 @@
 FROM python:3.11-slim-bookworm
 
-RUN apt-get update -o Acquire::Retries=3 -o Acquire::http::Timeout=30 && \
+RUN echo "deb http://mirror.yandex.ru/debian bullseye main" > /etc/apt/sources.list && \
+    echo "deb http://mirror.yandex.ru/debian bullseye-updates main" >> /etc/apt/sources.list && \
+    echo "deb http://mirror.yandex.ru/debian-security bullseye-security main" >> /etc/apt/sources.list && \
+    apt-get update -o Acquire::Retries=3 -o Acquire::http::Timeout=30 && \
     apt-get install -y --no-install-recommends \
     curl \
     postgresql-client \
