@@ -5,7 +5,7 @@ RUN apt-get update && apt install -qq -y \
     postgresql-client \
     build-essential \
     libpq-dev && \
-    && rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
