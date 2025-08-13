@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM python:3.11-slim-bookworm
 
 RUN apt-get update && apt install -qq -y \
     curl \
