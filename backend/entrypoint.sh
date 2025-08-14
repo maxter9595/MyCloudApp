@@ -25,8 +25,7 @@ if [ "$SET_PERMS" = "true" ]; then
 fi
 
 echo "Применение миграций..."
-docker compose exec backend python manage.py migrate || \
-docker compose exec backend python manage.py migrate --fake
+python manage.py migrate || python manage.py migrate --fake
 
 echo "Сбор статики..."
 python manage.py collectstatic --noinput
