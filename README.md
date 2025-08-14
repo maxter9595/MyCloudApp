@@ -320,8 +320,8 @@ docker compose up -d
 * Проверка наличия Docker контейнеров и настройка администратора:
 
 ```bash
-docker-compose ps
-docker-compose exec backend python manage.py createsuperuser
+docker compose ps
+docker compose exec backend python manage.py createsuperuser
 ```
 
 * Данные администратора:
