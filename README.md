@@ -378,5 +378,5 @@ sudo systemctl restart nginx
 
 * Доступ к приложению:
    - Фронтенд: [http://194.67.84.52/](http://194.67.84.52/)
-   - Бэкенд: [http://194.67.84.52/api/](http://194.67.84.52/api/)
-   - Админка PostgreSQL (через PGAdmin): [http://194.67.84.52/pgadmin/](http://194.67.84.52/pgadmin/)
+   - Бэкенд: [http://194.67.84.52:8000/api/docs/](http://194.67.84.52:8000/api/docs/)
+   - Админка PostgreSQL (через PGAdmin): [http://194.67.84.52:5050/](http://194.67.84.52:5050/)
