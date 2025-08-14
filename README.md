@@ -94,6 +94,7 @@ cp frontend/.env_example frontend/.env
 ```bash
 cd frontend
 npm install
+npm run build
 npm test
 cd ..
 ```
