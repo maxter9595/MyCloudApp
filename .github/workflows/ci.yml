@@ -23,6 +23,15 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+      redis:
+        image: redis:6
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - uses: actions/checkout@v3
@@ -51,6 +60,8 @@ jobs:
 
       - name: Run backend tests
         working-directory: backend
+        env:
+          DJANGO_SETTINGS_MODULE: mycloud.settings.test
         run: |
           python manage.py test
 
