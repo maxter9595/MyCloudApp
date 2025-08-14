@@ -71,7 +71,7 @@
 
 ### 2.1. Клонирование репозитория
 
-* :
+* Клонирование репозитория:
 
 ```bash
 git clone https://github.com/maxter9595/MyCloudApp.git
