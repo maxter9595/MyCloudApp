@@ -1,3 +1,6 @@
+import os
+import tempfile
+
 from .local import *
 
 DATABASES = {
@@ -20,3 +23,11 @@ CACHES = {
         }
     }
 }
+
+MEDIA_ROOT = tempfile.mkdtemp()
+
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.MD5PasswordHasher',
+]
+
+AUTH_PASSWORD_VALIDATORS = []
