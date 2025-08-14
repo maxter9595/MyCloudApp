@@ -387,3 +387,14 @@ sudo systemctl restart nginx
 Почта: admin@example.com
 Пароль: admin123
 ```
+
+* `Register...` ➝ `Server...`. Данные соединения к БД в СУБД PostgreSQL:
+
+```
+Host: db
+Port: 5432
+Maintenance database: my_database
+Username: postgres
+Password: postgres
+```
+
