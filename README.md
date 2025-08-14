@@ -101,6 +101,8 @@ cd ..
 
 ### 2.4. Запуск Docker
 
+* Запускаем Docker Desktop
+
 * Сборка проекта в Docker:
 
 ```bash
