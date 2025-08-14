@@ -380,3 +380,10 @@ sudo systemctl restart nginx
    - Фронтенд: [http://194.67.84.52/](http://194.67.84.52/)
    - Бэкенд: [http://194.67.84.52:8000/api/docs/](http://194.67.84.52:8000/api/docs/)
    - Админка PostgreSQL (через PGAdmin): [http://194.67.84.52:5050/](http://194.67.84.52:5050/)
+
+* Данные администратора БД для входа в админку PostgreSQL:
+
+```
+Почта: admin@example.com
+Пароль: admin123
+```
