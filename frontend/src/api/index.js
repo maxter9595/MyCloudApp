@@ -46,6 +46,7 @@ api.interceptors.request.use(async (config) => {
   }
 
   if (config.signal) {
+    // eslint-disable-next-line no-self-assign
     config.signal = config.signal;
   }
 
