@@ -1,82 +1,26 @@
-name: Deploy MyCloud App
+name: Deploy with SSH Key
 
 on:
   push:
     branches: [main]
-  workflow_dispatch:
-
-env:
-  SSH_HOST: ${{ secrets.SSH_HOST }}
-  SSH_USER: ${{ secrets.SSH_USER }}
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup SSH Key
-        uses: webfactory/ssh-agent@v0.7.0
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@master
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Test SSH Connection
-        run: ssh -o StrictHostKeyChecking=no -T $SSH_USER@$SSH_HOST exit
-
-      - name: Add server to known hosts
-        run: |
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-          ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
-          chmod 600 ~/.ssh/known_hosts
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: "18"
-
-      - name: Install dependencies and build frontend
-        working-directory: ./frontend
-        run: |
-          npm install
-          npm run build
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-
-      - name: Install backend dependencies
-        working-directory: ./backend
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Copy files to server
-        run: |
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./backend/ $SSH_USER@$SSH_HOST:/home/$SSH_USER/MyCloudApp/backend/
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./frontend/ $SSH_USER@$SSH_HOST:/home/$SSH_USER/MyCloudApp/frontend/
-          scp -o StrictHostKeyChecking=no docker-compose.yml $SSH_USER@$SSH_HOST:/home/$SSH_USER/MyCloudApp/
-          scp -o StrictHostKeyChecking=no .env.backend $SSH_USER@$SSH_HOST:/home/$SSH_USER/MyCloudApp/backend/.env
-          scp -o StrictHostKeyChecking=no .env.frontend $SSH_USER@$SSH_HOST:/home/$SSH_USER/MyCloudApp/frontend/.env
-          scp -o StrictHostKeyChecking=no .nginx-site_example $SSH_USER@$SSH_HOST:/home/$SSH_USER/MyCloudApp/
-
-      - name: Deploy on server
-        run: |
-          ssh $SSH_USER@$SSH_HOST <<EOF
-          cd /home/$SSH_USER/MyCloudApp
-          docker compose down
-          docker compose build --no-cache
-          docker compose up -d
-          sudo cp .nginx-site_example /etc/nginx/sites-available/mycloud
-          sudo ln -sf /etc/nginx/sites-available/mycloud /etc/nginx/sites-enabled/
-          sudo nginx -t
-          sudo systemctl restart nginx
-          EOF
-
-      - name: Verify deployment
-        run: |
-          curl -sSf http://$SSH_HOST > /dev/null || exit 1
-          curl -sSf http://$SSH_HOST:8000/api/health/ > /dev/null || exit 1
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/myclouduser/MyCloudApp
+            git fetch && git reset --hard origin/main
+            docker compose down
+            docker compose build --no-cache
+            docker compose up -d
+            sudo nginx -t && sudo systemctl restart nginx
