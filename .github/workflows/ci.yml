@@ -22,10 +22,15 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+      - name: Test SSH Connection
+        run: ssh -o StrictHostKeyChecking=no -T $SSH_USER@$SSH_HOST exit
+
       - name: Add server to known hosts
         run: |
           mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
           ssh-keyscan -H $SSH_HOST >> ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -51,12 +56,12 @@ jobs:
 
       - name: Copy files to server
         run: |
-          scp -r ./backend $SSH_USER@$SSH_HOST:/home/$SSH_USER/MyCloudApp/
-          scp -r ./frontend $SSH_USER@$SSH_HOST:/home/$SSH_USER/MyCloudApp/
-          scp docker-compose.yml $SSH_USER@$SSH_HOST:/home/$SSH_USER/MyCloudApp/
-          scp .env.backend $SSH_USER@$SSH_HOST:/home/$SSH_USER/MyCloudApp/backend/.env
-          scp .env.frontend $SSH_USER@$SSH_HOST:/home/$SSH_USER/MyCloudApp/frontend/.env
-          scp .nginx-site_example $SSH_USER@$SSH_HOST:/home/$SSH_USER/MyCloudApp/
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./backend/ $SSH_USER@$SSH_HOST:/home/$SSH_USER/MyCloudApp/backend/
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./frontend/ $SSH_USER@$SSH_HOST:/home/$SSH_USER/MyCloudApp/frontend/
+          scp -o StrictHostKeyChecking=no docker-compose.yml $SSH_USER@$SSH_HOST:/home/$SSH_USER/MyCloudApp/
+          scp -o StrictHostKeyChecking=no .env.backend $SSH_USER@$SSH_HOST:/home/$SSH_USER/MyCloudApp/backend/.env
+          scp -o StrictHostKeyChecking=no .env.frontend $SSH_USER@$SSH_HOST:/home/$SSH_USER/MyCloudApp/frontend/.env
+          scp -o StrictHostKeyChecking=no .nginx-site_example $SSH_USER@$SSH_HOST:/home/$SSH_USER/MyCloudApp/
 
       - name: Deploy on server
         run: |
