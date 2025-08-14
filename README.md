@@ -360,7 +360,7 @@ sudo nano /etc/nginx/nginx.conf
 ```
 ---------- nginx.conf ----------
 http {
-    lient_max_body_size 2G;  # Добавление client_max_body_size в http
+    client_max_body_size 2G;  # Добавление client_max_body_size в http
     ...
 }
 ---------- nginx.conf ----------
