@@ -75,17 +75,23 @@ jobs:
 
       - name: Setup SSH
         run: |
-          # Create .ssh directory with correct permissions
+          # Create .ssh directory with strict permissions
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
 
-          # Write private key with strict permissions
+          # Write private key with proper formatting
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          # Remove any Windows line endings if present
+          sed -i 's/\r$//' ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
           # Add host to known_hosts
           ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
+
+          # Verify key
+          ls -la ~/.ssh
+          ssh-keygen -l -f ~/.ssh/id_rsa
 
       - name: Debug SSH setup
         run: |
