@@ -449,3 +449,16 @@ ssh -T git@github.com
 # Если всё ок — увидим это сообщение:
 # Hi <твой_логин>! You've successfully authenticated ...
 ```
+
+
+* secret SSH_PRIVATE_KEY (на сервере):
+cat ~/.ssh/id_ed25519
+
+Все вместе с комментариями (их не убираем) - secret SSH_PRIVATE_KEY
+-----BEGIN OPENSSH PRIVATE KEY-----
+b3...=
+-----END OPENSSH PRIVATE KEY-----
+
+* secrets SSH_HOST и SSH_USER:
+SSH_HOST: 91.197.96.117
+SSH_USER: myclouduser
