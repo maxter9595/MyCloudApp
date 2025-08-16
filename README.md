@@ -404,62 +404,24 @@ Password: postgres
 
 * **Примечание**: инструкция по получению SSH-ключа приводится для пользователей Windows. В случае ОС Linux следует почитать эту статью из habr.com: [https://habr.com/ru/articles/897654/](https://habr.com/ru/articles/897654/)
 
-### 4.1. Создание публичного SSH-ключа и его копирование
-
-* Создание публичного SSH-ключа:
-
-```bash
-ssh-keygen -t ed25519 -C "max.t95@bk.ru"
-# max.t95@bk.ru - пример почты
-```
-
-* Ручное копирование публичного SSH-ключа:
-
-```bash
-type $env:USERPROFILE\.ssh\id_ed25519.pub
-# ssh-ed25519 AAAA...Vvtb max.t95@bk.ru
-# AAAA...Vvtb - пример выведенного ключа. Его нужно скопировать
-```
-
-### 4.2. Добавление скопированного публичного SHH-ключа на сервере
-
-* Добавление ключа на сервер:
-
 ```bash
 ssh myclouduser@194.67.84.52
-mkdir -p ~/.ssh
-echo "ssh-ed25519 AAAA...Vvtb max.t95@bk.ru" >> ~/.ssh/authorized_keys
-# AAAA...Vvtb - публичный SSH-ключ, полученный ранее
-```
+ssh-keygen -t ed25519 -C "max.t95@bk.ru"
 
-* Настраиваем права доступа к ключам:
+ssh-keygen -y -f ~/.ssh/id_ed25519
+ssh-keygen -y -f ~/.ssh/id_ed25519 >> ~/.ssh/authorized_keys
+cat ~/.ssh/authorized_keys
 
-```bash
 chmod 600 ~/.ssh/authorized_keys
 chmod 700 ~/.ssh
-```
 
-* Выходим из сервера и проверяем вход на сервер без пароля:
-
-```bash
 exit
 ssh myclouduser@194.67.84.52
 # Если всё ок — войдём без пароля.
-```
 
-### 4.3. Привязка публичного SHH-ключа к GitHub
-
-* После входа на сервер копируем публичный SSH-ключ:
-
-```bash
 cat ~/.ssh/id_ed25519.pub
 # Копируем все, что будет выведено
 ```
-
-```
-ssh-ed25519 AAAA...MP max.t95@bk.ru
-```
-
 
 * `Сайт GitHub` → `Settings` → `SSH and GPG keys` → `New SSH key`. Заполняем параметры SHH-ключа:
 
@@ -469,103 +431,21 @@ ssh-ed25519 AAAA...MP max.t95@bk.ru
   
 * После задания всех параметров для SSH ключа нажимаем `Add SSH key`
 
-### 4.4. Настройка конфигурации SSH и проверка аутентификации на GitHub на сервере
-
-* Добавление GitHub в known_hosts:
-
 ```bash
 ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-```
 
-* Создание и настройка конфигурации SSH:
-
-```bash
 nano ~/.ssh/config
-```
 
-```
 ----- ~/.ssh/config -----
 Host github.com
     HostName github.com
     User git
     IdentityFile ~/.ssh/id_ed25519
 ----- ~/.ssh/config -----
-```
 
-* Настройка прав доступа:
-
-```bash
 chmod 600 ~/.ssh/config
-```
 
-* Проверка подключения:
-
-```bash
 ssh -T git@github.com
 # Если всё ок — увидим это сообщение:
 # Hi <твой_логин>! You've successfully authenticated ...
 ```
-
-### 4.5. Готовим secrets для работы с GitHub Actions
-
-* ```SSH_HOST```: 91.197.96.117
-
-* ```SSH_USER```: myclouduser
-
-
-* `SSH_PRIVATE_KEY`:
-
-```bash
-cat ~/.ssh/id_ed25519
-```
-
-```
------BEGIN OPENSSH PRIVATE KEY-----
-b3Bl....ucnU=
------END OPENSSH PRIVATE KEY-----
-```
-
-###### Из результата копируем все, включая ```-----BEGIN OPENSSH PRIVATE KEY-----``` и ```-----END OPENSSH PRIVATE KEY----```. Скопированное сообщение - секретный ключ `SSH_PRIVATE_KEY`
-
-* `KNOWN_HOSTS`:
-
-```bash
-ssh-keyscan -H 194.67.84.52
-```
-
-###### Копируем все строки, начинающиеся с ```|1|...``` (хэшированные записи) и ```AAAA...``` (отпечатки ключей). Пример итоговой записи для ключа представлен ниже. Это и будет `KNOWN_HOSTS`
-
-```
-|1|qZ...k= ecdsa-sha2-nistp256 AAAA...Y=
-|1|AU...Cg= ssh-ed25519 AAAA...wZ
-|1|TA...Kw= ssh-rsa AAAA...1c=
-```
-
-### 4.6. Подставляем secrets для работы с GitHub Actions
-
-* ```GitHub-репозиторий проекта``` → ```Settings``` → ```Secrets and variables``` → ```Actions```. Задаем все secret-переменные, зафиксированные ранее:
-
-   * ```SSH_HOST```: 91.197.96.117
-
-   * ```SSH_USER```: myclouduser
-
-   * `SSH_PRIVATE_KEY`:
-
-      ```
-      -----BEGIN OPENSSH PRIVATE KEY-----
-      b3Bl....ucnU=
-      -----END OPENSSH PRIVATE KEY-----
-      ```
-
-
-  * `KNOWN_HOSTS`:
-
-      ```
-      |1|qZ...k= ecdsa-sha2-nistp256 AAAA...Y=
-      |1|AU...Cg= ssh-ed25519 AAAA...wZ
-      |1|TA...Kw= ssh-rsa AAAA...1c=
-      ```
-
-### 4.7. Проверяем работу GitHub Actions
-
-* Пушим последние изменения в репозиторий и смотрим на работу GitHub Actions
