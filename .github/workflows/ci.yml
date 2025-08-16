@@ -87,16 +87,11 @@ jobs:
       - name: Deploy to server
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
-            cd ~/MyCloudApp &&
-            git pull origin main &&
-            docker compose down --remove-orphans -v &&
-            docker compose build --no-cache &&
-            docker compose up -d &&
-            cd frontend &&
-            npm install &&
-            NODE_OPTIONS='--max_old_space_size=4096' GENERATE_SOURCEMAP=false npm run build &&
-            sudo chmod -R o+r /home/myclouduser/MyCloudApp/frontend/build &&
-            sudo chown -R myclouduser:www-data /home/myclouduser/MyCloudApp/frontend/build &&
-            sudo chmod -R 750 /home/myclouduser/MyCloudApp/frontend/build &&
+            set -e
+            cd ~/MyCloudApp || exit
+            git fetch origin
+            git reset --hard origin/main
+            docker compose down --remove-orphans
+            docker compose up -d --build
             sudo systemctl restart nginx
           "
