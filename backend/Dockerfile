@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 COPY . .
 
-RUN chmod +x /app/entrypoint.sh
+RUN chmod +x ./entrypoint.sh
+ENTRYPOINT ["./entrypoint.sh"]
 
-ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["gunicorn", "mycloud.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
