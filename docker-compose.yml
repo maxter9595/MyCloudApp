@@ -35,7 +35,7 @@ services:
     build:
       context: ./backend
     volumes:
-      - ./backend:/app
+      # - ./backend:/app
       - ./backend/media:/app/backend/media:rw
       - ./backend/static:/app/backend/static:rw
     entrypoint:
