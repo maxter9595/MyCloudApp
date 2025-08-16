@@ -404,61 +404,191 @@ Password: postgres
 
 * **Примечание**: инструкция по получению SSH-ключа приводится для пользователей Windows. В случае ОС Linux следует почитать эту статью из habr.com: [https://habr.com/ru/articles/897654/](https://habr.com/ru/articles/897654/)
 
+### 4.1. Генерация SSH-ключа на локальном ПК
+
+* Генерация SSH-ключа на локальном ПК:
+
 ```bash
-ssh myclouduser@194.67.84.52
 ssh-keygen -t ed25519 -C "max.t95@bk.ru"
-
-ssh-keygen -y -f ~/.ssh/id_ed25519
-ssh-keygen -y -f ~/.ssh/id_ed25519 >> ~/.ssh/authorized_keys
-cat ~/.ssh/authorized_keys
-
-chmod 600 ~/.ssh/authorized_keys
-chmod 700 ~/.ssh
-
-exit
-ssh myclouduser@194.67.84.52
-# Если всё ок — войдём без пароля.
-
-cat ~/.ssh/id_ed25519.pub
-# Копируем все, что будет выведено
 ```
 
-* `Сайт GitHub` → `Settings` → `SSH and GPG keys` → `New SSH key`. Заполняем параметры SHH-ключа:
+* Вывод SSH-ключа из локального ПК для копирования:
 
-  - В поле `Key` добавляем всю информацию о публичном SSH-ключе. Пример подобной информации - `ssh-ed25519 AAAA...MP max.t95@bk.ru` 
+```bash
+type $env:USERPROFILE\.ssh\id_ed25519.pub
+```
+
+```bash
+ssh-ed25519 AAAA...S5 max.t95@bk.ru
+# Копируем SSH-ключ (т.е. AAAA...S5)
+```
+
+### 4.2. Добавление SSH-ключа из локального ПК в список авторизованных ключей сервера
+
+* Вход на сервер:
+
+```bash
+ssh myclouduser@194.67.84.52
+```
+
+* Ввод SSH-ключа из локального ПК в список авторизированных ключей:
+
+```bash
+echo "ssh-ed25519 AAAA...S5 max.t95@bk.ru" >> ~/.ssh/authorized_keys
+```
+
+### 4.3. Генерация SSH-ключа на сервере
+
+* Генерация SSH-ключа на сервере:
+
+```bash
+ssh-keygen -t ed25519 -C "max.t95@bk.ru"
+```
+
+* Вывод SSH-ключа из сервера для просмотра:
+
+
+```bash
+ssh-keygen -y -f ~/.ssh/id_ed25519
+```
+
+```bash
+ssh-ed25519 AAAA...KK max.t95@bk.ru
+# Второй SSH-ключ понадобится для удаленного подключения к GitHub
+```
+
+### 4.4. Добавление SSH-ключа из сервера в список авторизованных ключей сервера
+
+* Ввод SSH-ключа из сервера в список авторизированных ключей:
+
+```bash
+ssh-keygen -y -f ~/.ssh/id_ed25519 >> ~/.ssh/authorized_keys
+```
+
+* Просмотр списка авторизированных ключей:
+
+```bash
+cat ~/.ssh/authorized_keys
+```
+
+```bash
+ssh-ed25519 AAAA...KK max.t95@bk.ru
+ssh-ed25519 AAAA...S5 max.t95@bk.ru
+# В итоге должно быть два SSH-ключа в списке авторизованных ключей
+```
+
+* Настройка прав для authorized_keys:
+
+```bash
+chmod 600 ~/.ssh/authorized_keys
+chmod 700 ~/.ssh
+```
+
+### 4.5. Настройка sudo без пароля для CI/CD
+
+* Вход в visudo и добавление параметров для обхода паролей пользователя при деплое:  
+
+```bash
+sudo visudo
+```
+
+```bash
+# Добавляем в конце файла следующее:
+myclouduser ALL=(ALL) NOPASSWD: ALL
+```
+
+* Выход из сервера и проверка входа на сервер без пароля:
+
+```bash
+exit
+ssh myclouduser@194.67.84.52
+# Если всё ок — войдём без пароля
+```
+
+### 4.6. Привязка SSH-ключа к GitHub
+
+* Вывод публичного SSH-ключа для взаимодействия с GitHub:
+
+```bash
+cat ~/.ssh/id_ed25519.pub
+```
+
+```bash
+# Копируем все, что будет выведено:
+ssh-ed25519 AAAA...KK max.t95@bk.ru
+```
+
+* Настройка публичного ключа к GitHub:
+
+   * ```Сайт GitHub``` → ```Settings``` → ```SSH and GPG keys``` → ```New SSH key```. Заполняем параметры SHH-ключа:
+
+     * Тип ключа: ```Authentication Key``` 
   
-  - Тип ключа - `Authentication Key`, имя ключа - `VM-server`
-  
-* После задания всех параметров для SSH ключа нажимаем `Add SSH key`
+     * Имя ключа: ```VM-server```
+
+     * В поле ```Key``` добавляем содержимое SSH-ключа. Пример - ```ssh-ed25519 AAAA...KK max.t95@bk.ru```
+
+  * После добавления параметров SSH-ключа нажимаем ```Add SSH key```
+
+### 4.7.Настройка файла SSH-конфигурации. Проверка подключения к GitHub
+
+* Внесение GitHub в список известных хостов сервера:
 
 ```bash
 ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+```
 
+* Настройка конфигурации для SSH:
+
+```bash
 nano ~/.ssh/config
+```
 
+```
 ----- ~/.ssh/config -----
 Host github.com
     HostName github.com
     User git
     IdentityFile ~/.ssh/id_ed25519
 ----- ~/.ssh/config -----
-
-chmod 600 ~/.ssh/config
-
-ssh -T git@github.com
-# Если всё ок — увидим это сообщение:
-# Hi <твой_логин>! You've successfully authenticated ...
 ```
 
+* Задание прав для файла SSH-конфигурации:
 
-* secret SSH_PRIVATE_KEY (на сервере):
+```bash
+chmod 600 ~/.ssh/config
+```
+
+* Проверяем взаимодействие с GitHub:
+
+```bash
+ssh -T git@github.com
+# Если всё ок — увидим это сообщение:
+# Hi <логин>! You've successfully authenticated ...
+```
+
+### 4.8. Задаем значения secret-параметров GitHub-репозитория для автодеплоя
+
+* Ввод команды на сервере для получения ```SSH_PRIVATE_KEY```:
+
+```bash
 cat ~/.ssh/id_ed25519
+```
 
-Все вместе с комментариями (их не убираем) - secret SSH_PRIVATE_KEY
------BEGIN OPENSSH PRIVATE KEY-----
-b3...=
+```bash
+# Копируем абсолютно все вместе с комментариями BEGIN и END (их не убираем) 
+
+-----BEGIN OPENSSH PRIVATE KEY----- 
+b3...= 
 -----END OPENSSH PRIVATE KEY-----
+```
 
-* secrets SSH_HOST и SSH_USER:
-SSH_HOST: 91.197.96.117
-SSH_USER: myclouduser
+* Ввод secrets для автодеплоя GitHub-репозитория:
+
+  * SSH_HOST: ```194.67.84.52```
+
+  * SSH_USER: ```myclouduser```
+
+  * SSH_PRIVATE_KEY: результат команды ```cat ~/.ssh/id_ed25519``` на сервере
+
+* После установки secrets проверяем функционал автодеплоя
