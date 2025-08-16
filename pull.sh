@@ -14,7 +14,7 @@ if [ -d "frontend" ]; then
     cd ..
 fi
 
-docker compose down --remove-orphans
+docker compose down --remove-orphans -v
 docker compose up -d --build
 
 sudo systemctl restart nginx
