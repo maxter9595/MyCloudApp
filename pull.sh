@@ -19,6 +19,17 @@ echo "Перезапуск Docker..."
 docker compose down
 docker compose up -d --build
 
+chmod +x backend/entrypoint.sh
+
+sudo chmod o+x /home/myclouduser
+sudo chmod o+x /home/myclouduser/MyCloudApp
+sudo chmod o+x /home/myclouduser/MyCloudApp/frontend
+sudo chmod o+x /home/myclouduser/MyCloudApp/frontend/build
+
+sudo chmod -R o+r /home/myclouduser/MyCloudApp/frontend/build
+sudo chown -R myclouduser:www-data /home/myclouduser/MyCloudApp/frontend/build
+sudo chmod -R 750 /home/myclouduser/MyCloudApp/frontend/build
+
 # Перезапуск nginx
 echo "Перезапуск Nginx..."
 sudo systemctl restart nginx
