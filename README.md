@@ -449,9 +449,21 @@ ssh myclouduser@194.67.84.52
 
 ### 4.3. Привязка публичного SHH-ключа к GitHub
 
+* После входа на сервер копируем публичный SSH-ключ:
+
+```bash
+cat ~/.ssh/id_ed25519.pub
+# Копируем все, что будет выведено
+```
+
+```
+ssh-ed25519 AAAA...MP max.t95@bk.ru
+```
+
+
 * `Сайт GitHub` → `Settings` → `SSH and GPG keys` → `New SSH key`. Заполняем параметры SHH-ключа:
 
-  - В поле `Key` добавляем всю информацию о публичном SSH-ключе. Пример подобной информации - `ssh-ed25519 AAAA...Vvtb max.t95@bk.ru` 
+  - В поле `Key` добавляем всю информацию о публичном SSH-ключе. Пример подобной информации - `ssh-ed25519 AAAA...MP max.t95@bk.ru` 
   
   - Тип ключа - `Authentication Key`, имя ключа - `VM-server`
   
@@ -462,7 +474,6 @@ ssh myclouduser@194.67.84.52
 * Добавление GitHub в known_hosts:
 
 ```bash
-ssh myclouduser@194.67.84.52
 ssh-keyscan -H github.com >> ~/.ssh/known_hosts
 ```
 
