@@ -78,20 +78,13 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Add server to known_hosts
-        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-
       - name: Test SSH connection
         run: ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} echo "SSH OK"
 
       - name: Deploy to server
-        run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
-            set -e
-            cd ~/MyCloudApp || exit
-            git fetch origin
-            git reset --hard origin/main
-            docker compose down --remove-orphans
-            docker compose up -d --build
-            sudo systemctl restart nginx
-          "
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: /home/myclouduser/MyCloudApp/pull.sh
