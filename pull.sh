@@ -1,8 +1,8 @@
 #!/bin/bash
-set -e
-
+set -e  # Прекращать выполнение при любой ошибке
 cd /home/myclouduser/MyCloudApp || exit
 
+echo "Обновляем код..."
 git fetch origin
 git reset --hard origin/main
 
@@ -14,7 +14,13 @@ if [ -d "frontend" ]; then
     cd ..
 fi
 
-docker compose down --remove-orphans -v
+# Перезапуск Docker
+echo "Перезапуск Docker..."
+docker compose down
 docker compose up -d --build
 
+# Перезапуск nginx
+echo "Перезапуск Nginx..."
 sudo systemctl restart nginx
+
+echo "Обновление завершено!"
