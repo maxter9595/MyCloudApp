@@ -32,13 +32,6 @@ services:
       - backend_net
 
   backend:
-    environment:
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_NAME=my_database
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - SET_PERMS=true
     build:
       context: ./backend
     volumes:
@@ -62,6 +55,11 @@ services:
     networks:
       - backend_net
     environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=my_database
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
       - SET_PERMS=true
 
   frontend:
