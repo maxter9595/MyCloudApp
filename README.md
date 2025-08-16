@@ -109,42 +109,6 @@ cd ..
 docker-compose up --build -d
 ```
 
-* После запуска миграций и сборки Docker появятся следующие обычные пользователи (заданы в ```0002_add_mortal_kombat_users.py```): 
-
-```
-# User 1
-username: scorpion123
-password': GetOverHere!123
-
-# User 2
-username: subzero456
-password': IceClone$456
-
-# User 3
-username: liukang789
-password: BicycleKick*789
-
-# User 4
-username: raiden321
-password: GodOfThunder#321
-
-# User 5
-username: johnnyc654
-password: HollywoodStar@654
-
-# User 6
-username: sonya987
-password: MilitaryGrade!987
-
-# User 7
-username: jax567
-password: MetalArms$567
-
-# User 8
-username: kitana890
-password: FanOfDeath%890
-```
-
 ### 2.5. Настройка администратора и тестирование (бэкенд)
 
 * Создание администратора:
