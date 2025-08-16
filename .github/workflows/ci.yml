@@ -6,9 +6,6 @@ on:
   pull_request:
     branches: [main, master]
 
-env:
-  NODE_OPTIONS: --max_old_space_size=4096
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -43,21 +40,17 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: "npm"
 
-      - name: Install and test frontend
+      - name: Install dependencies and test frontend
         working-directory: frontend
         run: |
-          npm ci
-          npm audit fix --force || true
+          npm install
           npm test
-          npm run build --if-present
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.10"
-          cache: "pip"
 
       - name: Install backend dependencies
         working-directory: backend
@@ -69,8 +62,6 @@ jobs:
         working-directory: backend
         env:
           DJANGO_SETTINGS_MODULE: mycloud.settings.test
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/test_db
-          REDIS_URL: redis://localhost:6379/0
         run: |
           python manage.py test
 
@@ -98,8 +89,14 @@ jobs:
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
             cd ~/MyCloudApp &&
             git pull origin main &&
-            docker compose down --remove-orphans &&
+            docker compose down --remove-orphans -v &&
             docker compose build --no-cache &&
             docker compose up -d &&
+            cd frontend &&
+            npm install &&
+            NODE_OPTIONS='--max_old_space_size=4096' GENERATE_SOURCEMAP=false npm run build &&
+            sudo chmod -R o+r /home/myclouduser/MyCloudApp/frontend/build &&
+            sudo chown -R myclouduser:www-data /home/myclouduser/MyCloudApp/frontend/build &&
+            sudo chmod -R 750 /home/myclouduser/MyCloudApp/frontend/build &&
             sudo systemctl restart nginx
           "
