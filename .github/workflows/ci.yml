@@ -82,9 +82,26 @@ jobs:
         run: ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} echo "SSH OK"
 
       - name: Deploy to server
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: /home/myclouduser/MyCloudApp/pull.sh
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
+            set -e
+            cd ~/MyCloudApp || exit
+
+            git fetch origin
+            git reset --hard origin/main
+
+            cd frontend
+            npm install
+            npm run build
+
+            chmod o+x /home/myclouduser
+            chmod o+x /home/myclouduser/MyCloudApp
+            chmod o+x /home/myclouduser/MyCloudApp/frontend
+            sudo chmod o+x /home/myclouduser/MyCloudApp/frontend/build
+
+            sudo chmod -R o+r /home/myclouduser/MyCloudApp/frontend/build
+            sudo chown -R myclouduser:www-data /home/myclouduser/MyCloudApp/frontend/build
+            sudo chmod -R 750 /home/myclouduser/MyCloudApp/frontend/build
+
+            sudo systemctl restart nginx
+          "
