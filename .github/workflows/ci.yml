@@ -72,31 +72,27 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-        with:
-          ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' | sed 's/\\n/\n/g' > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy to server
-        env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USER: ${{ secrets.SSH_USER }}
         run: |
-          ssh -o StrictHostKeyChecking=no ${SSH_USER}@${SSH_HOST} << 'EOF'
-          cd ~/MyCloudApp
-          git pull origin main
-          docker compose down
-          docker compose build --no-cache
-          docker compose up -d
-          cd frontend
-          npm install
-          npm run build
-          sudo chmod -R o+r /home/myclouduser/MyCloudApp/frontend/build
-          sudo chown -R myclouduser:www-data /home/myclouduser/MyCloudApp/frontend/build
-          sudo chmod -R 750 /home/myclouduser/MyCloudApp/frontend/build
-          sudo systemctl restart nginx
-          EOF
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
+            cd ~/MyCloudApp &&
+            git pull origin main &&
+            docker compose down &&
+            docker compose build --no-cache &&
+            docker compose up -d &&
+            cd frontend &&
+            npm install &&
+            npm run build &&
+            sudo chmod -R o+r /home/myclouduser/MyCloudApp/frontend/build &&
+            sudo chown -R myclouduser:www-data /home/myclouduser/MyCloudApp/frontend/build &&
+            sudo chmod -R 750 /home/myclouduser/MyCloudApp/frontend/build &&
+            sudo systemctl restart nginx
+          "
