@@ -1,5 +1,0 @@
-#!/bin/bash/expect
-spawn /home/myclouduser/MyCloudApp/pull.sh
-expect "pass"
-send -- "myclouduser\r"
-expect eof

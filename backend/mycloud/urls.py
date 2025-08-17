@@ -1,9 +1,8 @@
 from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.http import JsonResponse
 from django.urls import include, path
-from django.conf.urls.static import static
-
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
@@ -13,7 +12,7 @@ from drf_spectacular.views import (
 
 def health(request):
     return JsonResponse(
-        {"status": "ok"}
+        {"status": "everything is fine"}
     )
 
 urlpatterns = [
