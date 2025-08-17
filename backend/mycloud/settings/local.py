@@ -18,6 +18,7 @@ CSRF_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
 CSRF_TRUSTED_ORIGINS = [
+    'http://95.163.220.37',
     'http://localhost:3000',
     'http://127.0.0.1:3000',
 ]
