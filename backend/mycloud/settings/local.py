@@ -20,9 +20,7 @@ CSRF_COOKIE_SECURE = False
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
-    'http://194.58.126.122',
 ]
-
 
 ## =========================== ##
 ## 3. Development applications ##

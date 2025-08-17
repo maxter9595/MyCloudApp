@@ -254,12 +254,26 @@ cp backend/.env_example backend/.env
 sudo nano backend/.env
 ```
 
-```
+```bash
 ----- backend/.env -----
-ALLOWED_HOSTS=127.0.0.1,localhost,backend,mycloudapp.local,194.67.84.52 # Добавляем IP-адрес сервера
+ALLOWED_HOSTS=127.0.0.1,localhost,backend,mycloudapp.local,my-ip-address # Добавляем серверный IP вместо my-ip-address 
 ....
-CORS_ALLOWED_ORIGINS=http://194.67.84.52:3000 # Добавляем IP-адрес сервера
+CORS_ALLOWED_ORIGINS=http://my-ip-address,http://localhost:3000,http://127.0.0.1:3000,http://frontend:80 # Добавляем серверный IP вместо my-ip-address
 ----- backend/.env -----
+```
+
+* Редактирование ```CSRF_TRUSTED_ORIGINS``` в ```base.py```:
+
+```bash
+nano backend/mycloud/settings/local.py
+```
+
+```bash
+CSRF_TRUSTED_ORIGINS = [
+    'http://my-ip-address', # Добавляем серверный IP вместо my-ip-address
+    'http://localhost:3000'
+]
+
 ```
 
 ### 3.4. Подготовка фронтенда для деплоя
@@ -273,7 +287,7 @@ sudo nano frontend/.env
 
 ```
 ----- backend/.env -----
-REACT_APP_API_BASE_URL=http://194.67.84.52:8000/api # Добавляем IP-адрес сервера
+REACT_APP_API_BASE_URL=http://my-ip-address:8000/api # Добавляем серверный IP вместо my-ip-address
 ----- backend/.env -----
 ```
 
@@ -337,18 +351,18 @@ Email: admin@mail.ru
 
 ### 3.6. Конфигурация Nginx
 
-* Настройка nginx/sites-available под определенный IP адрес:
+* Настройка ```nginx/sites-available``` под определенный IP адрес:
 
 ```bash
 sudo cp .nginx-site_example /etc/nginx/sites-available/mycloud
 sudo nano /etc/nginx/sites-available/mycloud
 ```
 
-```
+```bash
 ----- sites-available/mycloud -----
 server {
     listen 80;
-    server_name 194.67.84.52; # Добавление IP-адреса сервера
+    server_name my-ip-address; # Добавление IP-адреса сервера вместо my-ip-address
     ... 
 ----- sites-available/mycloud -----
 ```
@@ -359,7 +373,7 @@ server {
 sudo nano /etc/nginx/nginx.conf
 ```
 
-```
+```bash
 ---------- nginx.conf ----------
 http {
     client_max_body_size 2G;  # Добавление client_max_body_size в http
