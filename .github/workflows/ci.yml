@@ -90,6 +90,12 @@ jobs:
             git fetch origin
             git reset --hard origin/main
 
+            cd backend
+            chmod +x entrypoint.sh
+
+            cd ..
+            docker compose up -d --build backend celery celery-beat db redis pgadmin
+
             cd frontend
             npm install
             npm run build
@@ -97,8 +103,8 @@ jobs:
             chmod o+x /home/myclouduser
             chmod o+x /home/myclouduser/MyCloudApp
             chmod o+x /home/myclouduser/MyCloudApp/frontend
-            sudo chmod o+x /home/myclouduser/MyCloudApp/frontend/build
 
+            sudo chmod o+x /home/myclouduser/MyCloudApp/frontend/build
             sudo chmod -R o+r /home/myclouduser/MyCloudApp/frontend/build
             sudo chown -R myclouduser:www-data /home/myclouduser/MyCloudApp/frontend/build
             sudo chmod -R 750 /home/myclouduser/MyCloudApp/frontend/build
