@@ -244,7 +244,9 @@ cd MyCloudApp
 * Настройка entrypoint в роли исполняемого файла (на всякий случай):
 
 ```bash
-chmod +x backend/entrypoint.sh
+cd backend
+chmod +x entrypoint.sh
+cd ..
 ```
 
 * Редактирование переменных окружения для бэкенда:
@@ -256,9 +258,13 @@ sudo nano backend/.env
 
 ```bash
 ----- backend/.env -----
-ALLOWED_HOSTS=127.0.0.1,localhost,backend,mycloudapp.local,my-ip-address # Добавляем серверный IP вместо my-ip-address 
+# Добавляем серверный IP вместо my-ip-address 
+ALLOWED_HOSTS=127.0.0.1,localhost,backend,mycloudapp.local,my-ip-address
+
 ....
-CORS_ALLOWED_ORIGINS=http://my-ip-address,http://localhost:3000,http://127.0.0.1:3000,http://frontend:80 # Добавляем серверный IP вместо my-ip-address
+
+# Добавляем серверный IP вместо my-ip-address
+CORS_ALLOWED_ORIGINS=http://my-ip-address,http://localhost:3000,http://127.0.0.1:3000,http://frontend:80
 ----- backend/.env -----
 ```
 
@@ -269,11 +275,11 @@ nano backend/mycloud/settings/local.py
 ```
 
 ```bash
+# Добавляем серверный IP вместо my-ip-address
 CSRF_TRUSTED_ORIGINS = [
-    'http://my-ip-address', # Добавляем серверный IP вместо my-ip-address
+    'http://my-ip-address',
     'http://localhost:3000'
 ]
-
 ```
 
 ### 3.4. Подготовка фронтенда для деплоя
@@ -360,9 +366,10 @@ sudo nano /etc/nginx/sites-available/mycloud
 
 ```bash
 ----- sites-available/mycloud -----
+# Добавление IP-адреса сервера вместо my-ip-address
 server {
     listen 80;
-    server_name my-ip-address; # Добавление IP-адреса сервера вместо my-ip-address
+    server_name my-ip-address;
     ... 
 ----- sites-available/mycloud -----
 ```
@@ -375,8 +382,9 @@ sudo nano /etc/nginx/nginx.conf
 
 ```bash
 ---------- nginx.conf ----------
+# Добавление client_max_body_size в http
 http {
-    client_max_body_size 2G;  # Добавление client_max_body_size в http
+    client_max_body_size 2G; 
     ...
 }
 ---------- nginx.conf ----------
@@ -433,7 +441,7 @@ type $env:USERPROFILE\.ssh\id_ed25519.pub
 ```
 
 ```bash
-ssh-ed25519 AAAA...S5 max.t95@bk.ru
+ssh-ed25519 AAAA...jU max.t95@bk.ru
 # Копируем SSH-ключ (т.е. AAAA...S5)
 ```
 
@@ -459,22 +467,22 @@ ssh-keygen -y -f ~/.ssh/id_ed25519
 ```
 
 ```bash
-ssh-ed25519 AAAA...KK max.t95@bk.ru
+ssh-ed25519 AAAA...rx max.t95@bk.ru
 # Второй SSH-ключ понадобится для удаленного подключения к GitHub
 ```
 
 ### 4.3. Добавление SSH-ключей из локального ПК и сервера в список авторизованных ключей сервера
 
-* Ввод SSH-ключа из локального ПК в список авторизированных ключей:
-
-```bash
-echo "ssh-ed25519 AAAA...S5 max.t95@bk.ru" >> ~/.ssh/authorized_keys
-```
-
 * Ввод SSH-ключа из сервера в список авторизированных ключей:
 
 ```bash
 ssh-keygen -y -f ~/.ssh/id_ed25519 >> ~/.ssh/authorized_keys
+```
+
+* Ввод SSH-ключа из локального ПК в список авторизированных ключей:
+
+```bash
+echo "ssh-ed25519 AAAA...jU max.t95@bk.ru" >> ~/.ssh/authorized_keys
 ```
 
 * Просмотр списка авторизированных ключей:
@@ -484,10 +492,13 @@ cat ~/.ssh/authorized_keys
 ```
 
 ```bash
-ssh-ed25519 AAAA...S5 max.t95@bk.ru
-ssh-ed25519 AAAA...KK max.t95@bk.ru
+ssh-ed25519 AAAA...rx max.t95@bk.ru
+ssh-ed25519 AAAA...jU max.t95@bk.ru
 # В итоге должно быть два SSH-ключа в списке авторизованных ключей
 ```
+
+### 4.4. Настройка sudo без пароля для CI/CD
+
 
 * Настройка прав для authorized_keys:
 
@@ -496,7 +507,6 @@ chmod 600 ~/.ssh/authorized_keys
 chmod 700 ~/.ssh
 ```
 
-### 4.4. Настройка sudo без пароля для CI/CD
 
 * Вход в visudo и добавление параметров для обхода паролей пользователя при деплое:  
 
@@ -527,7 +537,7 @@ cat ~/.ssh/id_ed25519.pub
 
 ```bash
 # Копируем все, что будет выведено:
-ssh-ed25519 AAAA...KK max.t95@bk.ru
+ssh-ed25519 AAAA...rx max.t95@bk.ru
 ```
 
 * Настройка публичного ключа к GitHub:
@@ -538,7 +548,7 @@ ssh-ed25519 AAAA...KK max.t95@bk.ru
   
      * Имя ключа: ```VM-server```
 
-     * В поле ```Key``` добавляем содержимое SSH-ключа. Пример - ```ssh-ed25519 AAAA...KK max.t95@bk.ru```
+     * В поле ```Key``` добавляем содержимое SSH-ключа. Пример - ```ssh-ed25519 AAAA...rx max.t95@bk.ru```
 
   * После добавления параметров SSH-ключа нажимаем ```Add SSH key```
 

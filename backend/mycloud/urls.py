@@ -12,7 +12,7 @@ from drf_spectacular.views import (
 
 def health(request):
     return JsonResponse(
-        {"status": "ok"}
+        {"status": "everythins is ok"}
     )
 
 urlpatterns = [
