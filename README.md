@@ -2,7 +2,7 @@
 
 - Задеплоенное приложение (Reg.ru): [http://95.163.220.37](http://95.163.220.37)
 
-- Визуализация шагов: [https://drive.google.com/drive/folders/1aA9QMMS22qpLBtScZ-ht6q2mdg1jVJ51?usp=sharing](https://drive.google.com/drive/folders/1aA9QMMS22qpLBtScZ-ht6q2mdg1jVJ51?usp=sharing)
+- Визуализация шагов: [ссылка на Google Drive](https://drive.google.com/drive/folders/1aA9QMMS22qpLBtScZ-ht6q2mdg1jVJ51?usp=sharing)
 
 - Выполнил: [Терлецкий Максим Владимирович](https://cv-git-main-maxim-terltskiis-projects.vercel.app/)
 
@@ -651,7 +651,7 @@ b3...=
   * SSH_PRIVATE_KEY: результат команды ```cat ~/.ssh/id_ed25519``` на сервере
 
 
-* Перед деплоем внимательно смотрим на наличие IP-адреса в списке ```CSRF_TRUSTED_ORIGINS``` из ```settings/local.py```: должна быть ссылка на облачный сервер.
+* Перед деплоем внимательно смотрим на наличие IP-адреса в списке ```CSRF_TRUSTED_ORIGINS``` из ```settings/local.py```: должна быть ссылка на сервер.
 
 ![image info](demo/3-warning/3-1-before-deploy.png)
 
