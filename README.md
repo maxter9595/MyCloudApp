@@ -185,7 +185,7 @@ Password: postgres
 * Вход на сервер после его приобретения:
 
 ```bash
-ssh root@194.67.84.52
+ssh root@95.163.220.37
 # Входим по IP и паролю, выданным на почту
 ```
 
@@ -228,7 +228,7 @@ systemctl start docker
 ```bash
 usermod -aG docker myclouduser
 exit
-ssh myclouduser@194.67.84.52
+ssh myclouduser@95.163.220.37
 # Входим по паролю, заданному пользователю изначально через adduser myclouduser
 ```
 
@@ -393,9 +393,9 @@ sudo systemctl restart nginx
 ### 3.7. Открытие приложения
 
 * Доступ к приложению:
-   - Фронтенд: [http://194.67.84.52/](http://194.67.84.52/)
-   - Бэкенд: [http://194.67.84.52:8000/api/docs/](http://194.67.84.52:8000/api/docs/)
-   - Админка PostgreSQL (через PGAdmin): [http://194.67.84.52:5050/](http://194.67.84.52:5050/)
+   - Фронтенд: [http://95.163.220.37/](http://95.163.220.37/)
+   - Бэкенд: [http://95.163.220.37:8000/api/docs/](http://95.163.220.37:8000/api/docs/)
+   - Админка PostgreSQL (через PGAdmin): [http://95.163.220.37:5050/](http://95.163.220.37:5050/)
 
 * Данные администратора БД для входа в админку PostgreSQL:
 
@@ -442,7 +442,7 @@ ssh-ed25519 AAAA...S5 max.t95@bk.ru
 * Вход на сервер:
 
 ```bash
-ssh myclouduser@194.67.84.52
+ssh myclouduser@95.163.220.37
 ```
 
 * Генерация SSH-ключа на сервере:
@@ -513,7 +513,7 @@ myclouduser ALL=(ALL) NOPASSWD: ALL
 
 ```bash
 exit
-ssh myclouduser@194.67.84.52
+ssh myclouduser@95.163.220.37
 # Если всё ок — войдём без пароля
 ```
 
@@ -597,7 +597,7 @@ b3...=
 
 * Ввод secrets для автодеплоя GitHub-репозитория:
 
-  * SSH_HOST: ```194.67.84.52```
+  * SSH_HOST: ```95.163.220.37```
 
   * SSH_USER: ```myclouduser```
 
