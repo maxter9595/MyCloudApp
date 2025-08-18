@@ -15,6 +15,7 @@ env = environ.Env(
     DB_HOST=(str, 'localhost'),
     DB_PORT=(int, 5432),
     CORS_ALLOWED_ORIGINS=(list, ['http://localhost:3000']),
+    CSRF_TRUSTED_ORIGINS=(list, ['http://localhost:3000']),
     REDIS_URL=(str, 'redis://localhost:6379/0'),
     REDIS_CACHE_URL=(str, 'redis://localhost:6379/1'),
 )
