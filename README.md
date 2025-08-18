@@ -302,22 +302,8 @@ ALLOWED_HOSTS=127.0.0.1,localhost,backend,mycloudapp.local,my-ip-address
 
 # Добавляем http://my-ip-address (например, http://95.163.220.37)
 CORS_ALLOWED_ORIGINS=http://my-ip-address,http://localhost:3000,http://127.0.0.1:3000,http://frontend:80
+CSRF_TRUSTED_ORIGINS=http://my-ip-address,http://localhost:3000,http://127.0.0.1:3000,http://frontend:80
 ----- backend/.env -----
-```
-
-* Редактирование ```CSRF_TRUSTED_ORIGINS``` в ```base.py```:
-
-```bash
-nano backend/mycloud/settings/local.py
-```
-
-```bash
-# Добавляем http://my-ip-address в список (например, http://95.163.220.37)
-CSRF_TRUSTED_ORIGINS = [
-    'http://my-ip-address',
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-]
 ```
 
 ### 4.4. Подготовка фронтенда для деплоя
@@ -649,10 +635,5 @@ b3...=
   * SSH_USER: ```myclouduser```
 
   * SSH_PRIVATE_KEY: результат команды ```cat ~/.ssh/id_ed25519``` на сервере
-
-
-* Перед деплоем внимательно смотрим на наличие IP-адреса в списке ```CSRF_TRUSTED_ORIGINS``` из ```settings/local.py```: должна быть ссылка на сервер.
-
-![image info](demo/3-warning/3-1-before-deploy.png)
 
 * После установки secrets проверяем функционал автодеплоя
