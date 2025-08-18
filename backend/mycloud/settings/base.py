@@ -3,12 +3,10 @@ from pathlib import Path
 
 import environ
 
-
 ## ======================== ##
 ## 1. Environment variables ##
 ## ======================== ##
 env = environ.Env(
-    DEBUG=(bool, False),
     SECRET_KEY=(str, 'dummy-key-for-dev-only!change-me!'),
     ALLOWED_HOSTS=(list, ['127.0.0.1', 'localhost']),
     DB_NAME=(str, 'postgres'),
@@ -32,7 +30,6 @@ env.read_env(
 ## 2. Basic settings ##
 ## ================= ##
 SECRET_KEY = env('SECRET_KEY')
-DEBUG = env('DEBUG')
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 
 ROOT_URLCONF = 'mycloud.urls'
@@ -154,7 +151,7 @@ REST_FRAMEWORK = {
 ## 8. CORS & Security ##
 ## ================== ##
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS')
-CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
+CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS')
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS=True
