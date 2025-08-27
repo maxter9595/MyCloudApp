@@ -139,7 +139,7 @@ cd ..
 
 * Запуск Docker Desktop. Его наличие необходимо
 
-* Сборка и запуск Docker-сервисов:
+* Сборка и запуск Docker:
 
 ```bash
 docker-compose up --build -d
@@ -371,9 +371,9 @@ sudo chmod -R 750 /home/myclouduser/MyCloudApp/frontend/build
 
 <img src="./demo/4-server-deploy/4-frontend.gif" width="100%">
 
-### 4.5. Запуск Docker-сервисов. Создание администратора
+### 4.5. Запуск Docker. Создание администратора
 
-* Сборка и запуск Docker-сервисов:
+* Сборка и запуск Docker:
 
 ```bash
 cd ~/MyCloudApp
